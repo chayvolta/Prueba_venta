@@ -360,7 +360,7 @@
 
     /* DASHBOARD */
     .dashboard {
-      max-width: 1240px;
+      max-width: 1400px;
       margin: 0 auto 3rem;
       padding: 0.3rem 2.5rem 2.5rem;
     }
@@ -488,9 +488,11 @@
     .filters-right {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 0.5rem;
       font-size: 0.78rem;
       color: #6b7280;
+      justify-content: flex-end;
     }
 
     .filters-right span {
@@ -501,6 +503,27 @@
       padding: 0.25rem 0.5rem;
       border-radius: 999px;
       background: rgba(15, 23, 42, 0.04);
+    }
+
+    .btn-reset {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: #ffffff;
+      font-size: 0.78rem;
+      padding: 0.28rem 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #374151;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      transition: background 0.14s ease, color 0.14s ease, transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .btn-reset:hover {
+      background: #f3f4f6;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
     }
 
     .selector-row {
@@ -540,7 +563,7 @@
 
     .map-and-list {
       display: grid;
-      grid-template-columns: minmax(0, 2.3fr) minmax(260px, 1.1fr);
+      grid-template-columns: minmax(0, 2.6fr) minmax(260px, 1fr);
       gap: 1.3rem;
       align-items: stretch;
     }
@@ -550,8 +573,8 @@
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-soft);
       border: 1px solid var(--fonatur-border);
-      padding: 0.5rem;
-      min-height: 430px;
+      padding: 0.7rem;
+      min-height: 720px; /* mapa mucho más grande */
       display: flex;
       flex-direction: column;
     }
@@ -617,7 +640,7 @@
       display: flex;
       flex-direction: column;
       min-height: 320px;
-      max-height: 430px;
+      max-height: 720px; /* que acompañe al mapa grande */
     }
 
     .lot-list-header {
@@ -766,7 +789,7 @@
       padding: 1rem 2.5rem 1.5rem;
       font-size: 0.76rem;
       color: #6b7280;
-      max-width: 1240px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
@@ -802,6 +825,10 @@
       .lot-list-panel {
         max-height: none;
         order: -1;
+      }
+
+      .map-wrapper {
+        min-height: 520px;
       }
     }
 
@@ -868,6 +895,7 @@
             </h1>
             <p class="hero-subtitle">
               Explora el inventario georreferenciado de lotes con <strong>filtros por disponibilidad</strong>,
+              <strong>desarrollo</strong>, <strong>sección</strong> y <strong>uso de suelo</strong>,
               estadísticas agregadas y un mapa interactivo diseñado para usos <strong>institucionales y académicos</strong>.
             </p>
             <div class="hero-actions">
@@ -922,8 +950,11 @@
         <div class="dashboard-header">
           <div>
             <h2 class="dashboard-title">Panel de lotes georreferenciados</h2>
-            <p class="dashboard-subtitle">Carga automáticamente el archivo <strong>Prueba_1.geojson</strong> (FeatureCollection
-              con MultiPolygon) y muestra los polígonos estilizados por <em>disponibilidad</em>, <em>desarrollo</em>, <em>sección</em> y <em>uso de suelo</em>.</p>
+            <p class="dashboard-subtitle">
+              Carga automáticamente el archivo <strong>Prueba_1.geojson</strong> (FeatureCollection
+              con MultiPolygon) y muestra los polígonos estilizados por <em>disponibilidad</em>,
+              <em>desarrollo</em>, <em>sección</em> y <em>uso de suelo</em>.
+            </p>
             <p id="geojson-error" class="alert-error"></p>
           </div>
         </div>
@@ -972,6 +1003,7 @@
           </div>
           <div class="filters-right">
             <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
+            <button id="reset-view-btn" class="btn-reset" type="button">Volver al inicio</button>
           </div>
         </div>
 
@@ -1005,8 +1037,10 @@
               </div>
             </div>
             <div id="map"></div>
-            <p class="map-caption">Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) con
-              resaltado al pasar el cursor y <em>zoom</em> al hacer clic.</p>
+            <p class="map-caption">
+              Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) con
+              resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
+            </p>
           </div>
 
           <aside class="lot-list-panel">
@@ -1018,7 +1052,8 @@
             </div>
             <div class="search-input-wrapper">
               <span class="search-input-icon">🔍</span>
-              <input id="search-input" type="search" placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
+              <input id="search-input" type="search"
+                     placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
             </div>
             <div class="lot-list-scroll" id="lot-list"></div>
           </aside>
@@ -1027,8 +1062,10 @@
     </main>
 
     <footer>
-      <span>Demo de geoportal inmobiliario con Leaflet + Anime.js. Usa tu archivo <strong>Prueba_1.geojson</strong> en la misma carpeta
-        que este HTML para visualizar los polígonos correctamente.</span>
+      <span>
+        Demo de geoportal inmobiliario con Leaflet + Anime.js. Usa tu archivo
+        <strong>Prueba_1.geojson</strong> en la misma carpeta que este HTML para visualizar los polígonos correctamente.
+      </span>
     </footer>
   </div>
 
@@ -1109,6 +1146,7 @@
         setupBaseSwitcher();
         setupFilters();
         setupSearch();
+        setupResetButton();
         loadGeoJSON();
         runIntroAnimations();
       }
@@ -1141,6 +1179,7 @@
 
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
+        // Vista general México
         map.setView([23.6345, -102.5528], 5);
       }
 
@@ -1267,6 +1306,7 @@
           if (uso) usosSet[uso] = true;
         });
 
+        // Si no hay usos para esa combinación, usa todos los usos del dataset
         if (Object.keys(usosSet).length === 0) {
           geojsonData.features.forEach(function (feature) {
             var uso = getUsoFromProps(feature.properties || {});
@@ -1674,6 +1714,51 @@
 
           buildLotList(filtered);
         });
+      }
+
+      function setupResetButton() {
+        var btn = document.getElementById('reset-view-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function () {
+          resetAllFiltersAndView();
+          var hero = document.querySelector('.hero');
+          if (hero && hero.scrollIntoView) {
+            hero.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      function resetAllFiltersAndView() {
+        currentFilter = 'all';
+        currentDesarrollo = 'all';
+        currentSeccion = 'all';
+        currentUsoSuelo = 'all';
+
+        var chips = document.querySelectorAll('.filter-chip');
+        chips.forEach(function (c) {
+          c.classList.remove('is-active');
+          if (c.getAttribute('data-filter') === 'all') {
+            c.classList.add('is-active');
+          }
+        });
+
+        var devSelect = document.getElementById('dev-select');
+        var secSelect = document.getElementById('sec-select');
+        var usoSelect = document.getElementById('uso-select');
+        var searchInput = document.getElementById('search-input');
+
+        if (devSelect) devSelect.value = 'all';
+        populateSectionOptions('all');
+        if (secSelect) secSelect.value = 'all';
+        populateUsoOptions();
+        if (usoSelect) usoSelect.value = 'all';
+        if (searchInput) searchInput.value = '';
+
+        // Vista general México
+        map.setView([23.6345, -102.5528], 5);
+
+        renderLots('all');
       }
 
       function runIntroAnimations() {
