@@ -700,6 +700,80 @@
       opacity: 0.85;
     }
 
+        .map-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .map-toolbar-group {
+      display: inline-flex;
+      padding: 0.15rem;
+      border-radius: 999px;
+      background: rgba(243, 244, 246, 0.94);
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .map-base-btn {
+      border: none;
+      background: transparent;
+      padding: 0.28rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: #4b5563;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    }
+
+    .map-base-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(229, 231, 235, 0.9);
+    }
+
+    .map-base-btn.is-active {
+      background: #006b4f;
+      color: #f9fafb;
+    }
+
+    .selector-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+      font-size: 0.78rem;
+    }
+
+    .selector-group {
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .selector-label {
+      color: #6b7280;
+    }
+
+    .selector-select {
+      border-radius: 999px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: #f9fafb;
+      padding: 0.28rem 0.75rem;
+      font-size: 0.78rem;
+      outline: none;
+      transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+    }
+
+    .selector-select:focus {
+      border-color: var(--fonatur-teal);
+      box-shadow: 0 0 0 1px rgba(0, 165, 139, 0.4);
+      background: #ffffff;
+    }
+
     @media (max-width: 960px) {
       .top-nav {
         padding-inline: 1.2rem;
@@ -893,14 +967,36 @@
             </button>
           </div>
           <div class="filters-right">
-            <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
-          </div>
+          <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
         </div>
+      </div>
 
-        <div class="map-and-list">
+      <div class="selector-row">
+        <div class="selector-group">
+          <span class="selector-label">Desarrollo</span>
+          <select id="dev-select" class="selector-select">
+            <option value="all">Todos los desarrollos</option>
+          </select>
+        </div>
+        <div class="selector-group">
+          <span class="selector-label">Sección</span>
+          <select id="sec-select" class="selector-select">
+            <option value="all">Todas las secciones</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="map-and-list">
           <div class="map-wrapper">
+            <div class="map-toolbar">
+              <div class="map-toolbar-group">
+                <button class="map-base-btn is-active" type="button" data-base="claro">Mapa</button>
+                <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
+                <button class="map-base-btn" type="button" data-base="topo">Topográfico</button>
+              </div>
+            </div>
             <div id="map"></div>
-            <p class="map-caption">Mapa base OpenStreetMap + capa de polígonos de lotes (MultiPolygon) con resaltado al
+            <p class="map-caption">Mapa base con opciones claro, satélite y topográfico + capa de polígonos de lotes (MultiPolygon) con resaltado al
               pasar el cursor y <em>zoom</em> al hacer clic.</p>
           </div>
 
@@ -913,7 +1009,7 @@
             </div>
             <div class="search-input-wrapper">
               <span class="search-input-icon">🔍</span>
-              <input id="search-input" type="search" placeholder="Buscar por lote, manzana, sección o desarrollo" />
+              <input id="search-input" type="search" placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
             </div>
             <div class="lot-list-scroll" id="lot-list"></div>
           </aside>
