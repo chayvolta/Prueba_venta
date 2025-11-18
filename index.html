@@ -487,7 +487,9 @@
 
     .filters-right {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
+      justify-content: flex-end;
       gap: 0.5rem;
       font-size: 0.78rem;
       color: #6b7280;
@@ -501,6 +503,27 @@
       padding: 0.25rem 0.5rem;
       border-radius: 999px;
       background: rgba(15, 23, 42, 0.04);
+    }
+
+    .btn-reset {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: #ffffff;
+      font-size: 0.78rem;
+      padding: 0.28rem 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #374151;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      transition: background 0.14s ease, color 0.14s ease, transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .btn-reset:hover {
+      background: #f3f4f6;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
     }
 
     .selector-row {
@@ -828,9 +851,14 @@
       .filters-row {
         align-items: flex-start;
       }
+
+      .selector-row {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="page-shell">
     <header class="top-nav">
@@ -863,7 +891,8 @@
             </h1>
             <p class="hero-subtitle">
               Explora el inventario georreferenciado de lotes con <strong>filtros por disponibilidad</strong>,
-              estadísticas agregadas y un mapa interactivo diseñado para usos <strong>institucionales y académicos</strong>.
+              <strong>desarrollo</strong>, <strong>sección</strong> y <strong>uso de suelo</strong>, estadísticas agregadas
+              y un mapa interactivo diseñado para usos <strong>institucionales y académicos</strong>.
             </p>
             <div class="hero-actions">
               <button class="btn btn-primary" type="button" onclick="document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' });">
@@ -906,8 +935,10 @@
                 <span>Superficie total visible</span>
                 <span class="hero-metric-value" id="hero-area">—</span>
               </div>
-              <p class="hero-note">La superficie total y el conteo de lotes se calculan a partir de los atributos de tu
-                archivo <strong>Prueba_1.geojson</strong>.</p>
+              <p class="hero-note">
+                La superficie total y el conteo de lotes se calculan a partir de los atributos de tu
+                archivo <strong>Prueba_1.geojson</strong>.
+              </p>
             </div>
           </div>
         </div>
@@ -917,8 +948,11 @@
         <div class="dashboard-header">
           <div>
             <h2 class="dashboard-title">Panel de lotes georreferenciados</h2>
-            <p class="dashboard-subtitle">Carga automáticamente el archivo <strong>Prueba_1.geojson</strong> (FeatureCollection
-              con MultiPolygon) y muestra los polígonos estilizados por <em>disponibilidad</em> a nivel de lote.</p>
+            <p class="dashboard-subtitle">
+              Carga automáticamente el archivo <strong>Prueba_1.geojson</strong> (FeatureCollection
+              con MultiPolygon) y muestra los polígonos estilizados por <em>disponibilidad</em>, <em>desarrollo</em>,
+              <em>sección</em> y <em>uso de suelo</em>.
+            </p>
             <p id="geojson-error" class="alert-error"></p>
           </div>
         </div>
@@ -932,12 +966,16 @@
           <article class="stat-card">
             <div class="stat-label">Disponibles</div>
             <div class="stat-value" id="stat-available">—</div>
-            <div class="stat-chip" style="background:rgba(16,185,129,0.1);color:#047857;">Listos para análisis comercial</div>
+            <div class="stat-chip" style="background:rgba(16,185,129,0.1);color:#047857;">
+              Listos para análisis comercial
+            </div>
           </article>
           <article class="stat-card">
             <div class="stat-label">En proceso / alta</div>
             <div class="stat-value" id="stat-process">—</div>
-            <div class="stat-chip" style="background:rgba(246,184,25,0.08);color:#92400e;">Avalúo / publicación pendiente</div>
+            <div class="stat-chip" style="background:rgba(246,184,25,0.08);color:#92400e;">
+              Avalúo / publicación pendiente
+            </div>
           </article>
           <article class="stat-card">
             <div class="stat-label">Superficie total filtrada</div>
@@ -966,7 +1004,8 @@
             </button>
           </div>
           <div class="filters-right">
-            <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
+            <span class="badge-soft">Fuente: "04-04Dispo" y "04-04Super" del GeoJSON</span>
+            <button id="reset-view-btn" class="btn-reset" type="button">Volver al inicio</button>
           </div>
         </div>
 
@@ -983,6 +1022,12 @@
               <option value="all">Todas las secciones</option>
             </select>
           </div>
+          <div class="selector-group">
+            <span class="selector-label">Uso de suelo</span>
+            <select id="uso-select" class="selector-select">
+              <option value="all">Todos los usos</option>
+            </select>
+          </div>
         </div>
 
         <div class="map-and-list">
@@ -995,8 +1040,10 @@
               </div>
             </div>
             <div id="map"></div>
-            <p class="map-caption">Mapa base con opciones claro, satélite y topográfico + capa de polígonos de lotes (MultiPolygon) con resaltado al
-              pasar el cursor y <em>zoom</em> al hacer clic.</p>
+            <p class="map-caption">
+              Mapa base con opciones claro, satélite y topográfico + capa de polígonos de lotes (MultiPolygon) con
+              resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
+            </p>
           </div>
 
           <aside class="lot-list-panel">
@@ -1008,7 +1055,8 @@
             </div>
             <div class="search-input-wrapper">
               <span class="search-input-icon">🔍</span>
-              <input id="search-input" type="search" placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
+              <input id="search-input" type="search"
+                     placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
             </div>
             <div class="lot-list-scroll" id="lot-list"></div>
           </aside>
@@ -1017,8 +1065,10 @@
     </main>
 
     <footer>
-      <span>Demo de geoportal inmobiliario con Leaflet + Anime.js. Usa tu archivo <strong>Prueba_1.geojson</strong> en la misma carpeta
-        que este HTML para visualizar los polígonos correctamente.</span>
+      <span>
+        Demo de geoportal inmobiliario con Leaflet + Anime.js. Usa tu archivo
+        <strong>Prueba_1.geojson</strong> en la misma carpeta que este HTML para visualizar los polígonos correctamente.
+      </span>
     </footer>
   </div>
 
@@ -1077,7 +1127,12 @@
       var currentFilter = 'all';
       var currentDesarrollo = 'all';
       var currentSeccion = 'all';
+      var currentUsoSuelo = 'all';
       var currentBaseKey = 'claro';
+
+      var devToSections = {};
+      var allSectionsSet = {};
+      var allUsoSet = {};
 
       document.addEventListener('DOMContentLoaded', initApp);
 
@@ -1086,6 +1141,7 @@
         setupBaseSwitcher();
         setupFilters();
         setupSearch();
+        setupResetButton();
         loadGeoJSON();
         runIntroAnimations();
       }
@@ -1162,6 +1218,7 @@
           })
           .then(function (data) {
             geojsonData = data;
+            computeIndicesFromData();
             populateSelectorsFromData();
             renderLots('all');
             setupSelectors();
@@ -1177,27 +1234,40 @@
           });
       }
 
-      function populateSelectorsFromData() {
-        if (!geojsonData || !Array.isArray(geojsonData.features)) return;
+      function computeIndicesFromData() {
+        devToSections = {};
+        allSectionsSet = {};
+        allUsoSet = {};
 
-        var devSet = {};
-        var secSet = {};
+        if (!geojsonData || !Array.isArray(geojsonData.features)) return;
 
         geojsonData.features.forEach(function (feature) {
           var p = feature.properties || {};
           var dev = p['04-04Desar'];
           var sec = p['04-04Secci'];
-          if (dev && dev.toString().trim()) devSet[dev] = true;
-          if (sec && sec.toString().trim()) secSet[sec] = true;
+          var uso = p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'];
+
+          if (sec && sec.toString().trim()) {
+            allSectionsSet[sec] = true;
+          }
+
+          if (dev && dev.toString().trim() && sec && sec.toString().trim()) {
+            if (!devToSections[dev]) devToSections[dev] = {};
+            devToSections[dev][sec] = true;
+          }
+
+          if (uso && uso.toString().trim()) {
+            allUsoSet[uso] = true;
+          }
         });
+      }
 
-        var devValues = Object.keys(devSet).sort();
-        var secValues = Object.keys(secSet).sort();
-
+      function populateSelectorsFromData() {
         var devSelect = document.getElementById('dev-select');
-        var secSelect = document.getElementById('sec-select');
+        var usoSelect = document.getElementById('uso-select');
 
         if (devSelect) {
+          var devValues = Object.keys(devToSections).sort();
           devSelect.innerHTML = '<option value="all">Todos los desarrollos</option>';
           devValues.forEach(function (v) {
             var opt = document.createElement('option');
@@ -1207,24 +1277,54 @@
           });
         }
 
-        if (secSelect) {
-          secSelect.innerHTML = '<option value="all">Todas las secciones</option>';
-          secValues.forEach(function (v) {
+        populateSectionOptions('all');
+
+        if (usoSelect) {
+          var usoValues = Object.keys(allUsoSet).sort();
+          usoSelect.innerHTML = '<option value="all">Todos los usos</option>';
+          usoValues.forEach(function (v) {
             var opt = document.createElement('option');
             opt.value = v;
             opt.textContent = v;
-            secSelect.appendChild(opt);
+            usoSelect.appendChild(opt);
           });
         }
+      }
+
+      function populateSectionOptions(devKey) {
+        var secSelect = document.getElementById('sec-select');
+        if (!secSelect) return;
+
+        var sections = [];
+        if (!devKey || devKey === 'all') {
+          sections = Object.keys(allSectionsSet);
+        } else if (devToSections[devKey]) {
+          sections = Object.keys(devToSections[devKey]);
+        }
+
+        sections.sort();
+        secSelect.innerHTML = '<option value="all">Todas las secciones</option>';
+        sections.forEach(function (s) {
+          var opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          secSelect.appendChild(opt);
+        });
       }
 
       function setupSelectors() {
         var devSelect = document.getElementById('dev-select');
         var secSelect = document.getElementById('sec-select');
+        var usoSelect = document.getElementById('uso-select');
 
         if (devSelect) {
           devSelect.addEventListener('change', function () {
             currentDesarrollo = devSelect.value || 'all';
+            populateSectionOptions(currentDesarrollo);
+            currentSeccion = 'all';
+            if (secSelect) {
+              secSelect.value = 'all';
+            }
             renderLots(currentFilter);
           });
         }
@@ -1232,6 +1332,13 @@
         if (secSelect) {
           secSelect.addEventListener('change', function () {
             currentSeccion = secSelect.value || 'all';
+            renderLots(currentFilter);
+          });
+        }
+
+        if (usoSelect) {
+          usoSelect.addEventListener('change', function () {
+            currentUsoSuelo = usoSelect.value || 'all';
             renderLots(currentFilter);
           });
         }
@@ -1271,6 +1378,14 @@
         return function () {
           return true;
         };
+      }
+
+      function getUsoFromProps(p) {
+        return (
+          (p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '')
+            .toString()
+            .trim() || ''
+        );
       }
 
       function getFillColor(dispo) {
@@ -1316,7 +1431,7 @@
         var manza = props['04-04Manza'] || '';
         var loteId = props['04-04Lote'] || '';
         var dispo = props['04-04Dispo'] || '';
-        var uso = props['04-04Descr'] || props['Uso_suelo'] || props['uso_suelo'] || '';
+        var uso = getUsoFromProps(props);
         var sup = props['04-04Super'] || '';
         var precio = props['04-04Preci'] || '';
         var nombreAttr = props.Nombre || '';
@@ -1383,6 +1498,13 @@
 
             if (currentSeccion !== 'all' && p['04-04Secci'] !== currentSeccion) {
               return false;
+            }
+
+            if (currentUsoSuelo !== 'all') {
+              var usoVal = getUsoFromProps(p);
+              if (usoVal !== currentUsoSuelo) {
+                return false;
+              }
             }
 
             return true;
@@ -1483,7 +1605,7 @@
             '</h4>' +
             '<p class="lot-location">' +
             escapeHtml(secci || '') +
-            (desar ? ' · ' + escapeHtml(desar) + '</span>' : '') +
+            (desar ? ' · ' + escapeHtml(desar) : '') +
             '</p>' +
             '</div>' +
             '<div class="lot-card-meta">' +
@@ -1570,6 +1692,47 @@
 
           buildLotList(filtered);
         });
+      }
+
+      function setupResetButton() {
+        var btn = document.getElementById('reset-view-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function () {
+          resetAllFiltersAndView();
+          var hero = document.querySelector('.hero');
+          if (hero && hero.scrollIntoView) {
+            hero.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      function resetAllFiltersAndView() {
+        currentFilter = 'all';
+        currentDesarrollo = 'all';
+        currentSeccion = 'all';
+        currentUsoSuelo = 'all';
+
+        var chips = document.querySelectorAll('.filter-chip');
+        chips.forEach(function (c) {
+          c.classList.remove('is-active');
+          if (c.getAttribute('data-filter') === 'all') {
+            c.classList.add('is-active');
+          }
+        });
+
+        var devSelect = document.getElementById('dev-select');
+        var secSelect = document.getElementById('sec-select');
+        var usoSelect = document.getElementById('uso-select');
+        var searchInput = document.getElementById('search-input');
+
+        if (devSelect) devSelect.value = 'all';
+        populateSectionOptions('all');
+        if (secSelect) secSelect.value = 'all';
+        if (usoSelect) usoSelect.value = 'all';
+        if (searchInput) searchInput.value = '';
+
+        renderLots('all');
       }
 
       function runIntroAnimations() {
