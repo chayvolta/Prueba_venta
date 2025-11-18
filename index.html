@@ -48,6 +48,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    body.no-scroll {
+      overflow: hidden;
+    }
+
     a {
       color: inherit;
       text-decoration: none;
@@ -574,18 +578,37 @@
       box-shadow: var(--shadow-soft);
       border: 1px solid var(--fonatur-border);
       padding: 0.7rem;
-      min-height: 720px; /* mapa mucho más grande */
+      min-height: min(75vh, 820px);
       display: flex;
       flex-direction: column;
     }
 
     .map-toolbar {
       display: flex;
-      justify-content: flex-end;
       align-items: center;
+      justify-content: flex-end;
       margin-bottom: 0.35rem;
       gap: 0.35rem;
       font-size: 0.75rem;
+    }
+
+    .map-list-toggle {
+      display: none;
+      margin-right: auto;
+      padding: 0.28rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      background: #ffffff;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+      font-size: 0.78rem;
+      cursor: pointer;
+      align-items: center;
+      gap: 0.4rem;
+      color: #111827;
+    }
+
+    .map-list-toggle span.icon {
+      font-size: 1rem;
     }
 
     .map-toolbar-group {
@@ -623,6 +646,7 @@
       height: 100%;
       border-radius: 1.2rem;
       overflow: hidden;
+      min-height: 0;
     }
 
     .map-caption {
@@ -640,7 +664,7 @@
       display: flex;
       flex-direction: column;
       min-height: 320px;
-      max-height: 720px; /* que acompañe al mapa grande */
+      max-height: min(75vh, 820px);
     }
 
     .lot-list-header {
@@ -659,6 +683,20 @@
     .lot-list-count {
       font-size: 0.75rem;
       color: #6b7280;
+    }
+
+    .lot-panel-close {
+      display: none;
+      border: none;
+      background: #f3f4f6;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #4b5563;
     }
 
     .search-input-wrapper {
@@ -718,7 +756,7 @@
     .lot-card:hover {
       transform: translateY(-1px);
       box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
-      border-color: rgba(16, 185, 129, 0.4);
+      border-color: rgba(220, 38, 38, 0.5);
       background: #f9fafb;
     }
 
@@ -732,8 +770,8 @@
       padding: 0.1rem 0.5rem;
       border-radius: 999px;
       font-size: 0.7rem;
-      background: rgba(16, 185, 129, 0.08);
-      color: #047857;
+      background: rgba(248, 113, 113, 0.15);
+      color: #b91c1c;
     }
 
     .lot-name {
@@ -760,6 +798,21 @@
       font-size: 0.78rem;
       color: #6b7280;
       margin-top: 0.6rem;
+    }
+
+    .mobile-list-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.42);
+      z-index: 1100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s ease;
+    }
+
+    .mobile-list-backdrop.is-visible {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* Leaflet popups */
@@ -822,13 +875,34 @@
         grid-template-columns: minmax(0, 1fr);
       }
 
-      .lot-list-panel {
-        max-height: none;
-        order: -1;
+      .map-wrapper {
+        min-height: calc(100vh - 220px);
       }
 
-      .map-wrapper {
-        min-height: 520px;
+      .map-list-toggle {
+        display: inline-flex;
+      }
+
+      .lot-list-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(100%, 420px);
+        max-height: none;
+        border-radius: 1.5rem 0 0 1.5rem;
+        transform: translateX(100%);
+        transition: transform 0.24s ease-out;
+        z-index: 1200;
+        box-shadow: -16px 0 40px rgba(15, 23, 42, 0.5);
+      }
+
+      .lot-list-panel.is-open {
+        transform: translateX(0);
+      }
+
+      .lot-panel-close {
+        display: inline-flex;
       }
     }
 
@@ -858,6 +932,12 @@
 
       .selector-row {
         flex-direction: column;
+      }
+    }
+
+    @media (min-width: 961px) {
+      .mobile-list-backdrop {
+        display: none;
       }
     }
   </style>
@@ -894,9 +974,12 @@
               Lotes <span>Fonatur</span> listos para análisis inmobiliario.
             </h1>
             <p class="hero-subtitle">
-              Explora el inventario georreferenciado de lotes con <strong>filtros por disponibilidad</strong>,
-              <strong>desarrollo</strong>, <strong>sección</strong> y <strong>uso de suelo</strong>,
-              estadísticas agregadas y un mapa interactivo diseñado para usos <strong>institucionales y académicos</strong>.
+              Explora el inventario georreferenciado de lotes con
+              <strong>filtros por disponibilidad</strong>,
+              <strong>desarrollo</strong>,
+              <strong>sección</strong> y
+              <strong>uso de suelo</strong>, estadísticas agregadas y un mapa interactivo
+              diseñado para usos <strong>institucionales y académicos</strong>.
             </p>
             <div class="hero-actions">
               <button class="btn btn-primary" type="button" onclick="document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' });">
@@ -939,8 +1022,10 @@
                 <span>Superficie total visible</span>
                 <span class="hero-metric-value" id="hero-area">—</span>
               </div>
-              <p class="hero-note">La superficie total y el conteo de lotes se calculan a partir de los atributos de tu
-                archivo <strong>Prueba_1.geojson</strong>.</p>
+              <p class="hero-note">
+                La superficie total y el conteo de lotes se calculan a partir de los atributos de tu
+                archivo <strong>Prueba_1.geojson</strong>.
+              </p>
             </div>
           </div>
         </div>
@@ -952,8 +1037,8 @@
             <h2 class="dashboard-title">Panel de lotes georreferenciados</h2>
             <p class="dashboard-subtitle">
               Carga automáticamente el archivo <strong>Prueba_1.geojson</strong> (FeatureCollection
-              con MultiPolygon) y muestra los polígonos estilizados por <em>disponibilidad</em>,
-              <em>desarrollo</em>, <em>sección</em> y <em>uso de suelo</em>.
+              con MultiPolygon) y muestra los polígonos estilizados por
+              <em>disponibilidad</em>, <em>desarrollo</em>, <em>sección</em> y <em>uso de suelo</em>.
             </p>
             <p id="geojson-error" class="alert-error"></p>
           </div>
@@ -1031,15 +1116,19 @@
         <div class="map-and-list">
           <div class="map-wrapper">
             <div class="map-toolbar">
+              <button class="map-list-toggle" type="button" id="mobile-list-toggle">
+                <span class="icon">☰</span>
+                <span>Lista de lotes</span>
+              </button>
               <div class="map-toolbar-group">
-                <button class="map-base-btn is-active" type="button" data-base="claro">Mapa</button>
+                <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
                 <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
               </div>
             </div>
             <div id="map"></div>
             <p class="map-caption">
-              Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) con
-              resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
+              Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) en tono rojizo
+              con resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
             </p>
           </div>
 
@@ -1049,6 +1138,7 @@
                 <div class="lot-list-title">Portafolio resumido</div>
                 <div class="lot-list-count" id="lot-list-count">—</div>
               </div>
+              <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
             </div>
             <div class="search-input-wrapper">
               <span class="search-input-icon">🔍</span>
@@ -1058,6 +1148,8 @@
             <div class="lot-list-scroll" id="lot-list"></div>
           </aside>
         </div>
+
+        <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
       </section>
     </main>
 
@@ -1088,7 +1180,8 @@
         fonaturTeal: '#00a58b',
         fonaturSand: '#f3e4c4',
         fonaturGold: '#f6b819',
-        grey: '#9ca3af'
+        grey: '#9ca3af',
+        lotRed: '#dc2626' // rojo principal
       };
 
       function escapeHtml(text) {
@@ -1124,9 +1217,9 @@
       }
 
       var map;
-      var baseLayer;
       var baseLayers = {};
-      var currentBaseKey = 'claro';
+      var baseLayer = null;
+      var currentBaseKey = 'mapa';
 
       var lotLayer = null;
       var geojsonData = null;
@@ -1147,6 +1240,7 @@
         setupFilters();
         setupSearch();
         setupResetButton();
+        setupMobileListToggle();
         loadGeoJSON();
         runIntroAnimations();
       }
@@ -1171,12 +1265,11 @@
         );
 
         baseLayers = {
-          claro: baseClaro,
+          mapa: baseClaro,
           satellite: baseSat
         };
 
         baseLayer = baseClaro.addTo(map);
-
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
         // Vista general México
@@ -1195,6 +1288,7 @@
             if (baseLayer) {
               map.removeLayer(baseLayer);
             }
+
             baseLayer = baseLayers[key];
             baseLayer.addTo(map);
             currentBaseKey = key;
@@ -1408,22 +1502,13 @@
         };
       }
 
-      function getFillColor(dispo) {
-        if (dispo === 'Disponible') return COLORS.fonaturTeal;
-        if (dispo === 'En Proceso de Alta' || dispo === 'V. En Proceso') return COLORS.fonaturGold;
-        if (dispo === 'No disponible') return COLORS.grey;
-        return COLORS.fonaturGreen;
-      }
-
       function styleByFeature(feature) {
-        var p = feature.properties || {};
-        var dispo = p['04-04Dispo'];
         return {
-          color: '#ffffff',
+          color: '#991b1b',
           weight: 1,
           opacity: 0.9,
-          fillColor: getFillColor(dispo),
-          fillOpacity: 0.82
+          fillColor: COLORS.lotRed,
+          fillOpacity: 0.3 // 30% de transparencia
         };
       }
 
@@ -1431,8 +1516,8 @@
         var target = layer || event.target;
         target.setStyle({
           weight: 3,
-          color: COLORS.fonaturGold,
-          fillOpacity: 0.95
+          color: '#f97316',
+          fillOpacity: 0.4
         });
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
           target.bringToFront();
@@ -1759,6 +1844,37 @@
         map.setView([23.6345, -102.5528], 5);
 
         renderLots('all');
+      }
+
+      function setupMobileListToggle() {
+        var toggleBtn = document.getElementById('mobile-list-toggle');
+        var closeBtn = document.getElementById('mobile-list-close');
+        var panel = document.querySelector('.lot-list-panel');
+        var backdrop = document.getElementById('mobile-list-backdrop');
+
+        if (!panel) return;
+
+        function openPanel() {
+          panel.classList.add('is-open');
+          if (backdrop) backdrop.classList.add('is-visible');
+          document.body.classList.add('no-scroll');
+        }
+
+        function closePanel() {
+          panel.classList.remove('is-open');
+          if (backdrop) backdrop.classList.remove('is-visible');
+          document.body.classList.remove('no-scroll');
+        }
+
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', openPanel);
+        }
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closePanel);
+        }
+        if (backdrop) {
+          backdrop.addEventListener('click', closePanel);
+        }
       }
 
       function runIntroAnimations() {
