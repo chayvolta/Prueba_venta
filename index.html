@@ -989,6 +989,22 @@
         display: none;
       }
     }
+
+    /* MODO EMBEBIDO (Para insertar en iframe) */
+    body.embed-mode .top-nav,
+    body.embed-mode footer {
+      display: none !important;
+    }
+
+    body.embed-mode .page-shell {
+      min-height: 0;
+      /* Evitar altura forzada */
+    }
+
+    body.embed-mode .hero {
+      padding-top: 1rem;
+      /* Reducir padding superior */
+    }
   </style>
 </head>
 
@@ -1294,7 +1310,10 @@
 
       document.addEventListener('DOMContentLoaded', initApp);
 
+      document.addEventListener('DOMContentLoaded', initApp);
+
       function initApp() {
+        checkEmbedMode(); // Revisar si estamos en modo embebido
         initMap();
         setupBaseSwitcher();
         setupFilters();
@@ -2091,6 +2110,14 @@
       }
 
 
+
+      // Detectar parámetro ?mode=embed
+      function checkEmbedMode() {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('mode') === 'embed') {
+          document.body.classList.add('embed-mode');
+        }
+      }
 
       function runIntroAnimations() {
         if (!window.anime) return;
