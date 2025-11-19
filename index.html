@@ -1287,6 +1287,7 @@
       // Clustering
       var markersClusterGroup = null;
       var zoomThreshold = 14; // Zoom nivel donde cambiamos de clusters a polígonos
+      var isFlying = false; // Flag para evitar parpadeo durante flyTo
 
       var lotLayer = null;
       var geojsonData = null;
@@ -1374,7 +1375,19 @@
         // - GeoJSON Layer contiene polígonos
         // - Mostramos uno u otro según zoom
 
+        // Evento de zoom para controlar visibilidad
+        // Usamos moveend para asegurar que la animación terminó antes de cambiar capas
         map.on('zoomend', function () {
+          if (!isFlying) updateLayerVisibility();
+        });
+
+        // Detectar inicio y fin de movimientos (incluyendo flyTo)
+        map.on('movestart', function () {
+          isFlying = true;
+        });
+
+        map.on('moveend', function () {
+          isFlying = false;
           updateLayerVisibility();
         });
       }
@@ -1808,6 +1821,8 @@
       }
 
       function updateLayerVisibility() {
+        if (isFlying) return; // No cambiar capas si está volando
+
         var z = map.getZoom();
 
         // Si el zoom es bajo (lejos), mostramos clusters y ocultamos polígonos
