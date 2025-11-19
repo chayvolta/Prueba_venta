@@ -92,18 +92,25 @@
       gap: 0.8rem;
     }
 
-    .brand-mark {
-      width: 32px;
+    .brand-img-icon {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-img-full {
       height: 32px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #ffffff 0, #f6f9f8 26%, #00a58b 27%, #006b4f 100%);
-      box-shadow: 0 0 0 3px rgba(243, 228, 196, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--fonatur-dark);
+      width: auto;
+      object-fit: contain;
+      margin-right: 0.2rem;
+      display: none;
+      /* Oculto en móviles si es necesario, o ajustar media queries */
+    }
+
+    @media (min-width: 640px) {
+      .brand-img-full {
+        display: block;
+      }
     }
 
     .brand-text-title {
@@ -1004,7 +1011,8 @@
   <div class="page-shell">
     <header class="top-nav">
       <div class="brand">
-        <div class="brand-mark">GT</div>
+        <img src="Logo_del_FONATUR_(sin_texto).png" class="brand-img-icon" alt="Símbolo Fonatur" />
+        <img src="Logo_del_FONATUR.png" class="brand-img-full" alt="Fonatur" />
         <div>
           <div class="brand-text-title">Geportal de Lotes Fonatur</div>
           <div class="brand-text-subtitle">Portafolio de lotes para venta</div>
