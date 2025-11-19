@@ -18,9 +18,11 @@
 
 
 
-  <!-- Deck.gl & Turf (Scripts en head para asegurar carga) -->
-  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-  <script src="https://unpkg.com/@deck.gl/leaflet@latest/dist.min.js"></script>
+  <!-- Leaflet MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+  <!-- Turf (Scripts en head para asegurar carga) -->
   <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 
   <style>
@@ -1152,8 +1154,6 @@
               <div class="map-toolbar-group">
                 <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
                 <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
-                <button class="map-base-btn" type="button" id="btn-3d-toggle"
-                  style="color:var(--fonatur-gold); font-weight:bold;">Vista 3D</button>
               </div>
             </div>
             <div id="map"></div>
@@ -1196,6 +1196,9 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Leaflet MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 
 
@@ -1251,8 +1254,10 @@
       var baseLayers = {};
       var baseLayer = null;
       var currentBaseKey = 'mapa';
-      var deckLayer = null; // Capa 3D
-      var is3DMode = false;
+
+      // Clustering
+      var markersClusterGroup = null;
+      var zoomThreshold = 14; // Zoom nivel donde cambiamos de clusters a polígonos
 
       var lotLayer = null;
       var geojsonData = null;
@@ -1270,7 +1275,6 @@
       function initApp() {
         initMap();
         setupBaseSwitcher();
-        setup3DToggle(); // Nuevo toggle 3D
         setupFilters();
         setupSearch();
         setupResetButton();
@@ -1310,6 +1314,17 @@
 
         // Vista general México
         map.setView([23.6345, -102.5528], 5);
+
+        // Evento de zoom para controlar visibilidad (opcional, markercluster lo hace solo, 
+        // pero aquí queremos ocultar polígonos y mostrar clusters o viceversa si queremos control manual)
+        // En este caso usaremos la estrategia: 
+        // - MarkerClusterGroup contiene marcadores (centroides)
+        // - GeoJSON Layer contiene polígonos
+        // - Mostramos uno u otro según zoom
+
+        map.on('zoomend', function () {
+          updateLayerVisibility();
+        });
       }
 
       function setupBaseSwitcher() {
@@ -1685,14 +1700,73 @@
             var item = makeLotItem(feature, layer);
             lotItems.push(item);
           }
-        }).addTo(map);
+        }); // No añadimos al mapa directamente aún, lo gestiona updateLayerVisibility
 
-        if (lotLayer.getLayers().length > 0) {
+        // Crear grupo de clusters
+        if (markersClusterGroup) {
+          map.removeLayer(markersClusterGroup);
+        }
+
+        markersClusterGroup = L.markerClusterGroup({
+          disableClusteringAtZoom: 16,
+          spiderfyOnMaxZoom: false,
+          showCoverageOnHover: false,
+          zoomToBoundsOnClick: true
+        });
+
+        // Generar marcadores para clusters (centroides)
+        var clusterMarkers = [];
+        lotItems.forEach(function (item) {
+          var center;
+          try {
+            var centroid = turf.centroid(item.feature);
+            center = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
+          } catch (e) {
+            center = item.layer.getBounds().getCenter();
+          }
+
+          // Marcador invisible o simple punto que representa el lote en el cluster
+          // Usamos un icono div simple
+          var marker = L.marker(center, {
+            icon: L.divIcon({
+              className: 'cluster-marker-dot',
+              html: '<div style="width:10px;height:10px;background:#006b4f;border-radius:50%;border:2px solid white;"></div>',
+              iconSize: [12, 12]
+            })
+          });
+
+          // Al hacer clic en un marcador individual (cuando ya no agrupa), hacemos zoom al polígono
+          marker.on('click', function () {
+            map.flyTo(center, 18, { duration: 1.5 });
+            // El polígono se mostrará al hacer zoom
+          });
+
+          markersClusterGroup.addLayer(marker);
+        });
+
+        updateLayerVisibility();
+
+        if (lotItems.length > 0 && lotLayer) {
+          // Ajustar vista inicial a los datos filtrados
           map.fitBounds(lotLayer.getBounds(), { padding: [12, 12] });
         }
 
         updateStatsFromItems(lotItems);
         buildLotList(lotItems);
+      }
+
+      function updateLayerVisibility() {
+        var z = map.getZoom();
+
+        // Si el zoom es bajo (lejos), mostramos clusters y ocultamos polígonos
+        if (z < zoomThreshold) {
+          if (map.hasLayer(lotLayer)) map.removeLayer(lotLayer);
+          if (!map.hasLayer(markersClusterGroup) && markersClusterGroup) map.addLayer(markersClusterGroup);
+        } else {
+          // Si el zoom es alto (cerca), mostramos polígonos y ocultamos clusters
+          if (map.hasLayer(markersClusterGroup)) map.removeLayer(markersClusterGroup);
+          if (!map.hasLayer(lotLayer) && lotLayer) map.addLayer(lotLayer);
+        }
       }
 
       function updateStatsFromItems(items) {
@@ -1957,107 +2031,7 @@
         }
       }
 
-      // OPCIÓN 1: Configuración de Deck.gl (3D)
-      function setup3DToggle() {
-        var btn3d = document.getElementById('btn-3d-toggle');
-        if (!btn3d) return;
 
-        btn3d.addEventListener('click', function () {
-          is3DMode = !is3DMode;
-
-          if (is3DMode) {
-            btn3d.classList.add('is-active');
-            btn3d.style.background = 'var(--fonatur-gold)';
-            btn3d.style.color = '#fff';
-            enableDeckGL();
-          } else {
-            btn3d.classList.remove('is-active');
-            btn3d.style.background = '';
-            btn3d.style.color = 'var(--fonatur-gold)';
-            disableDeckGL();
-          }
-        });
-      }
-
-      function enableDeckGL() {
-        if (!geojsonData) return;
-
-        // Ocultar capa 2D
-        if (lotLayer) {
-          map.removeLayer(lotLayer);
-        }
-
-        // Crear capa Deck.gl si no existe
-        if (!deckLayer) {
-          // Definir colores basados en estatus (similar a CSS pero en RGB array)
-          const getFillColor = d => {
-            const dispo = d.properties['04-04Dispo'];
-            if (dispo === 'Disponible') return [0, 165, 139, 200]; // Teal
-            if (dispo === 'En Proceso de Alta' || dispo === 'V. En Proceso') return [246, 184, 25, 200]; // Gold
-            return [156, 163, 175, 200]; // Grey
-          };
-
-          deckLayer = new deck.LeafletLayer({
-            layers: [
-              new deck.GeoJsonLayer({
-                id: 'lots-3d',
-                data: geojsonData,
-                pickable: true,
-                stroked: true,
-                filled: true,
-                extruded: true,
-                wireframe: true,
-                getElevation: f => {
-                  // Extrusión basada en superficie (escalada)
-                  const sup = parseSurface(f.properties['04-04Super']);
-                  return isNaN(sup) ? 10 : sup * 0.05;
-                },
-                getFillColor: getFillColor,
-                getLineColor: [255, 255, 255, 100],
-                getLineWidth: 1,
-                autoHighlight: true,
-                highlightColor: [255, 255, 0, 150],
-                opacity: 0.8,
-                onClick: ({ object }) => {
-                  if (object) {
-                    // Simple alert o popup custom (DeckGL no usa popups de Leaflet nativos fácilmente)
-                    console.log('Lote 3D click:', object.properties);
-                    // Podríamos sincronizar con la lista aquí
-                  }
-                },
-                // Tooltip simple
-                onHover: ({ object, x, y }) => {
-                  const el = document.getElementById('deck-tooltip');
-                  if (object) {
-                    // Mostrar tooltip (necesitaríamos crear el elemento DOM)
-                  }
-                }
-              })
-            ]
-          });
-        }
-
-        map.addLayer(deckLayer);
-
-        // Inclinar el mapa para ver el 3D (Leaflet no soporta pitch nativo fácilmente sin plugins extra, 
-        // pero DeckGL overlay funciona mejor si el usuario pudiera rotar. 
-        // NOTA: Leaflet estándar es 2D. Para pitch real se necesita MapboxGL o un hack.
-        // Deck.gl sobre Leaflet es "2.5D" (perspectiva cenital). 
-        // Sin embargo, la extrusión se verá como "bloques" desde arriba.
-        // Para efecto real 3D rotatorio, necesitaríamos cambiar el motor de mapa base, 
-        // pero cumpliremos con "extrusión" visual.
-      }
-
-      function disableDeckGL() {
-        if (deckLayer) {
-          map.removeLayer(deckLayer);
-        }
-        // Restaurar capa 2D con filtro actual
-        renderLots(currentFilter);
-      }
-
-      // Helper para re-renderizar al cambiar filtros si estamos en modo 3D
-      // (Opcional: actualizar la data de deckLayer cuando cambian los filtros)
 
       function runIntroAnimations() {
         if (!window.anime) return;
