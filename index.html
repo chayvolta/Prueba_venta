@@ -842,6 +842,36 @@
       pointer-events: auto;
     }
 
+    /* Custom Map Controls */
+    .reset-map-control {
+      margin: 12px 12px 0 0 !important;
+      /* Espacio desde el borde */
+      border: none !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 20px !important;
+      overflow: hidden;
+    }
+
+    .reset-map-btn {
+      background: #ffffff;
+      color: var(--fonatur-green);
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.9rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+
+    .reset-map-btn:hover {
+      background: #f3f4f6;
+    }
+
     /* Leaflet popups */
     .leaflet-container {
       font-family: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -1119,7 +1149,6 @@
           </div>
           <div class="filters-right">
             <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
-            <button id="reset-view-btn" class="btn-reset" type="button">Volver al inicio</button>
           </div>
         </div>
 
@@ -1287,6 +1316,29 @@
         map = L.map('map', {
           zoomControl: false
         });
+
+        // Botón "Volver al inicio" como control del mapa
+        var ResetControl = L.Control.extend({
+          options: {
+            position: 'topright'
+          },
+          onAdd: function () {
+            var container = L.DomUtil.create('div', 'leaflet-bar reset-map-control');
+            var btn = L.DomUtil.create('button', 'reset-map-btn', container);
+            btn.type = 'button';
+            btn.innerHTML = '<span>↺</span> Volver al inicio';
+            btn.title = 'Restablecer filtros y vista';
+
+            // Evitar que el clic se propague al mapa
+            L.DomEvent.disableClickPropagation(container);
+
+            btn.onclick = function (e) {
+              resetAllFiltersAndView();
+            };
+            return container;
+          }
+        });
+        map.addControl(new ResetControl());
 
         var baseClaro = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
