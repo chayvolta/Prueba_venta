@@ -1159,22 +1159,30 @@
             <h1 class="hero-title">
               Lotes <span>Fonatur</span> listos para análisis inmobiliario.
             </h1>
-            <p class="hero-subtitle">
-              Explora el inventario georreferenciado de lotes con
-              <strong>filtros por disponibilidad</strong>,
-              <strong>desarrollo</strong>,
-              <strong>sección</strong> y
-              <strong>uso de suelo</strong>, estadísticas agregadas y un mapa interactivo
-              diseñado para usos <strong>institucionales y de venta</strong>.
-            </p>
+            <div class="hero-subtitle">
+              Explora oportunidades de inversión en destinos turísticos estratégicos.
+              <strong>Información oficial y actualizada.</strong>
+            </div>
+
+            <!-- INDICADORES CLAVE MOVIDOS AQUÍ -->
+            <div class="hero-metric-row">
+              <div>
+                <div class="hero-metric-value" id="hero-total">0</div>
+                <div style="font-size:0.75rem; opacity:0.8;">Lotes Visibles</div>
+              </div>
+              <div>
+                <div class="hero-metric-value" id="hero-area">0 m²</div>
+                <div style="font-size:0.75rem; opacity:0.8;">Superficie Total</div>
+              </div>
+            </div>
+
             <div class="hero-actions">
-              <button class="btn btn-primary" type="button"
-                onclick="document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' });">
-                Ver mapa de lotes
+              <button class="btn btn-primary"
+                onclick="document.getElementById('dashboard-section').scrollIntoView({behavior: 'smooth'})">
+                Ver mapa interactivo
               </button>
-              <button class="btn btn-ghost" type="button"
-                onclick="document.querySelector('.lot-list-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });">
-                Ver listado resumido
+              <button class="btn btn-ghost" onclick="resetAllFiltersAndView()">
+                Restablecer vista
               </button>
             </div>
           </div>
@@ -1182,163 +1190,121 @@
           <div class="hero-right">
             <div class="hero-right-card">
               <div class="hero-right-header">
-                <div>
-                  <div class="hero-right-title">Indicadores clave</div>
-                  <div style="font-size:0.78rem;color:#6b7280;">Se actualizan desde el GeoJSON de lotes</div>
-                </div>
-                <span class="hero-tag">GeoJSON · Polígonos</span>
+                <div class="hero-right-title">Estado del Portafolio</div>
+                <span class="hero-tag">En tiempo real</span>
               </div>
               <div class="hero-legend">
                 <div class="legend-item">
-                  <span class="legend-swatch legend-swatch--available"></span>
+                  <div class="legend-swatch legend-swatch--available"></div>
                   <span>Disponible</span>
                 </div>
                 <div class="legend-item">
-                  <span class="legend-swatch legend-swatch--reserved"></span>
-                  <span>En proceso / por publicar</span>
+                  <div class="legend-swatch legend-swatch--reserved"></div>
+                  <span>En Proceso</span>
                 </div>
+                <!--
                 <div class="legend-item">
-                  <span class="legend-swatch legend-swatch--nodisp"></span>
-                  <span>No disponible</span>
+                  <div class="legend-swatch legend-swatch--nodisp"></div>
+                  <span>No Disponible</span>
                 </div>
-                <div class="legend-item">
-                  <span class="legend-swatch legend-swatch--other"></span>
-                  <span>Otros estatus</span>
-                </div>
+                -->
               </div>
-              <div class="hero-metric-row">
-                <span>Superficie total visible</span>
-                <span class="hero-metric-value" id="hero-area">—</span>
+              <div class="hero-note">
+                * La disponibilidad puede cambiar sin previo aviso.
               </div>
-              <p class="hero-note">
-                La superficie total y el conteo de lotes se calculan a partir de los atributos de tu
-                archivo <strong>Prueba_2.geojson</strong>.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="dashboard">
+      <section class="dashboard" id="dashboard-section">
         <div class="dashboard-header">
           <div>
-            <h2 class="dashboard-title">Panel de lotes georreferenciados</h2>
-            <p class="dashboard-subtitle">
-              Carga automáticamente el archivo <strong>Prueba_2.geojson</strong> (FeatureCollection
-              con MultiPolygon) y muestra los polígonos estilizados por
-              <em>disponibilidad</em>, <em>desarrollo</em>, <em>sección</em> y <em>uso de suelo</em>.
-            </p>
-            <p id="geojson-error" class="alert-error"></p>
+            </article>
           </div>
-        </div>
 
-        <div class="stats-row">
-          <article class="stat-card">
-            <div class="stat-label">Lotes mostrados</div>
-            <div class="stat-value" id="stat-total">—</div>
-            <div class="stat-chip">Según filtros activos</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Disponibles</div>
-            <div class="stat-value" id="stat-available">—</div>
-            <div class="stat-chip" style="background:rgba(16,185,129,0.1);color:#047857;">Listos para análisis comercial
-            </div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">En proceso / alta</div>
-            <div class="stat-value" id="stat-process">—</div>
-            <div class="stat-chip" style="background:rgba(246,184,25,0.08);color:#92400e;">Avalúo / publicación
-              pendiente</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Superficie total filtrada</div>
-            <div class="stat-value" id="stat-area">—</div>
-            <div class="stat-chip">A partir del atributo de superficie</div>
-          </article>
-        </div>
-
-        <div class="filters-row">
-          <div class="filter-chips">
-            <button class="filter-chip is-active" type="button" data-filter="all">
-              <span class="filter-chip-dot"></span>
-              <span>Todos</span>
-            </button>
-            <button class="filter-chip" type="button" data-filter="available">
-              <span class="filter-chip-dot"></span>
-              <span>Disponibles</span>
-            </button>
-            <button class="filter-chip" type="button" data-filter="process">
-              <span class="filter-chip-dot"></span>
-              <span>En proceso / alta</span>
-            </button>
-            <button class="filter-chip" type="button" data-filter="nodisp">
-              <span class="filter-chip-dot"></span>
-              <span>No disponibles</span>
-            </button>
-          </div>
-          <div class="filters-right">
-            <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
-          </div>
-        </div>
-
-        <div class="selector-row">
-          <div class="selector-group">
-            <span class="selector-label">Desarrollo</span>
-            <select id="dev-select" class="selector-select">
-              <option value="all">Todos los desarrollos</option>
-            </select>
-          </div>
-          <div class="selector-group">
-            <span class="selector-label">Sección</span>
-            <select id="sec-select" class="selector-select">
-              <option value="all">Todas las secciones</option>
-            </select>
-          </div>
-          <div class="selector-group">
-            <span class="selector-label">Uso de suelo</span>
-            <select id="uso-select" class="selector-select">
-              <option value="all">Todos los usos</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="map-and-list">
-          <div class="map-wrapper">
-            <div class="map-toolbar">
-              <button class="map-list-toggle" type="button" id="mobile-list-toggle">
-                <span class="icon">☰</span>
-                <span>Lista de lotes</span>
+          <div class="filters-row">
+            <div class="filter-chips">
+              <button class="filter-chip is-active" type="button" data-filter="all">
+                <span class="filter-chip-dot"></span>
+                <span>Todos</span>
               </button>
-              <div class="map-toolbar-group">
-                <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
-                <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
-              </div>
+              <button class="filter-chip" type="button" data-filter="available">
+                <span class="filter-chip-dot"></span>
+                <span>Disponibles</span>
+              </button>
+              <button class="filter-chip" type="button" data-filter="process">
+                <span class="filter-chip-dot"></span>
+                <span>En proceso / alta</span>
+              </button>
+              <button class="filter-chip" type="button" data-filter="nodisp">
+                <span class="filter-chip-dot"></span>
+                <span>No disponibles</span>
+              </button>
             </div>
-            <div id="map"></div>
-            <p class="map-caption">
-              Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) en tono rojizo
-              con resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
-            </p>
+            <div class="filters-right">
+              <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
+            </div>
           </div>
 
-          <aside class="lot-list-panel">
-            <div class="lot-list-header">
-              <div>
-                <div class="lot-list-title">Portafolio resumido</div>
-                <div class="lot-list-count" id="lot-list-count">—</div>
-              </div>
-              <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
+          <div class="selector-row">
+            <div class="selector-group">
+              <span class="selector-label">Desarrollo</span>
+              <select id="dev-select" class="selector-select">
+                <option value="all">Todos los desarrollos</option>
+              </select>
             </div>
-            <div class="search-input-wrapper">
-              <span class="search-input-icon">🔍</span>
-              <input id="search-input" type="search"
-                placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
+            <div class="selector-group">
+              <span class="selector-label">Sección</span>
+              <select id="sec-select" class="selector-select">
+                <option value="all">Todas las secciones</option>
+              </select>
             </div>
-            <div class="lot-list-scroll" id="lot-list"></div>
-          </aside>
-        </div>
+            <div class="selector-group">
+              <span class="selector-label">Uso de suelo</span>
+              <select id="uso-select" class="selector-select">
+                <option value="all">Todos los usos</option>
+              </select>
+            </div>
+          </div>
 
-        <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
+          <div class="map-and-list">
+            <div class="map-wrapper">
+              <div class="map-toolbar">
+                <button class="map-list-toggle" type="button" id="mobile-list-toggle">
+                  <span class="icon">☰</span>
+                  <span>Lista de lotes</span>
+                </button>
+                <div class="map-toolbar-group">
+                  <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
+                  <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
+                </div>
+              </div>
+              <div id="map"></div>
+              <p class="map-caption">
+                Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) en tono rojizo
+                con resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
+              </p>
+            </div>
+
+            <aside class="lot-list-panel">
+              <div class="lot-list-header">
+                <div>
+                  <div class="lot-list-title">Portafolio resumido</div>
+                  <div class="lot-list-count" id="lot-list-count">—</div>
+                </div>
+                <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
+              </div>
+              <div class="search-input-wrapper">
+                <span class="search-input-icon">🔍</span>
+                <input id="search-input" type="search"
+                  placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
+              </div>
+              <div class="lot-list-scroll" id="lot-list"></div>
+            </aside>
+          </div>
+
+          <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
       </section>
     </main>
 
@@ -1723,27 +1689,31 @@
           };
         }
 
-        if (filterName === 'available') {
+        // Filtros por Rango de Superficie
+        if (filterName === 'range1') { // < 500 m²
           return function (feature) {
             var p = feature.properties || {};
-            return p['04-04Dispo'] === 'Disponible';
+            var supStr = p['Superficie'] || p['04-04Super'];
+            var area = parseSurface(supStr);
+            return !isNaN(area) && area < 500;
           };
         }
 
-        if (filterName === 'process') {
+        if (filterName === 'range2') { // 500 - 1,000 m²
           return function (feature) {
             var p = feature.properties || {};
-            var d = p['04-04Dispo'];
-            return d === 'En Proceso de Alta' || d === 'V. En Proceso';
+            var supStr = p['Superficie'] || p['04-04Super'];
+            var area = parseSurface(supStr);
+            return !isNaN(area) && area >= 500 && area <= 1000;
           };
         }
 
-        if (filterName === 'nodisp') {
+        if (filterName === 'range3') { // > 1,000 m²
           return function (feature) {
             var p = feature.properties || {};
-            var d = p['04-04Dispo'];
-            if (!d) return false;
-            return d !== 'Disponible' && d !== 'En Proceso de Alta' && d !== 'V. En Proceso';
+            var supStr = p['Superficie'] || p['04-04Super'];
+            var area = parseSurface(supStr);
+            return !isNaN(area) && area > 1000;
           };
         }
 
@@ -2016,41 +1986,47 @@
 
       function updateStatsFromItems(items) {
         var totalLots = items.length;
-        var available = 0;
-        var process = 0;
         var totalArea = 0;
+        var developmentsSet = {};
 
         items.forEach(function (item) {
           var p = item.props || {};
-          // Estatus por defecto Disponible
-          var d = p['Estatus'] || p['04-04Dispo'] || 'Disponible';
 
-          if (d === 'Disponible') available++;
-          else if (d === 'En Proceso de Alta' || d === 'V. En Proceso') process++;
-
+          // Calcular superficie
           var supStr = p['Superficie'] || p['04-04Super'];
           var area = parseSurface(supStr);
           if (!isNaN(area)) {
             totalArea += area;
           }
+
+          // Contar desarrollos únicos
+          var desar = p['Desarrollo'] || p['04-04Desar'];
+          if (desar) {
+            developmentsSet[desar] = true;
+          }
         });
 
-        var totalEl = document.getElementById('stat-total');
-        var availEl = document.getElementById('stat-available');
-        var processEl = document.getElementById('stat-process');
-        var areaEl = document.getElementById('stat-area');
+        var uniqueDevelopments = Object.keys(developmentsSet).length;
+
+        // Elementos del DOM (Nuevos IDs)
+        var heroTotalEl = document.getElementById('hero-total');
         var heroAreaEl = document.getElementById('hero-area');
+
+        var statTotalAreaEl = document.getElementById('stat-total-area');
+        var statDevsEl = document.getElementById('stat-developments');
+
         var listCountEl = document.getElementById('lot-list-count');
 
-        if (totalEl) totalEl.textContent = totalLots.toLocaleString('es-MX');
-        if (availEl) availEl.textContent = available.toLocaleString('es-MX');
-        if (processEl) processEl.textContent = process.toLocaleString('es-MX');
-        if (areaEl)
-          areaEl.textContent =
-            totalLots > 0 ? totalArea.toLocaleString('es-MX', { maximumFractionDigits: 0 }) + ' m²' : '—';
-        if (heroAreaEl)
-          heroAreaEl.textContent =
-            totalLots > 0 ? totalArea.toLocaleString('es-MX', { maximumFractionDigits: 0 }) + ' m²' : '—';
+        // Actualizar valores
+        if (heroTotalEl) heroTotalEl.textContent = totalLots.toLocaleString('es-MX');
+
+        var areaFormatted = totalLots > 0 ? totalArea.toLocaleString('es-MX', { maximumFractionDigits: 0 }) + ' m²' : '—';
+
+        if (heroAreaEl) heroAreaEl.textContent = areaFormatted;
+        if (statTotalAreaEl) statTotalAreaEl.textContent = areaFormatted;
+
+        if (statDevsEl) statDevsEl.textContent = uniqueDevelopments.toLocaleString('es-MX');
+
         if (listCountEl)
           listCountEl.textContent =
             totalLots > 0
