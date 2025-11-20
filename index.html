@@ -888,13 +888,14 @@
 
     /* ESTILOS PERSONALIZADOS DEL POPUP (Ficha Técnica) */
     .custom-popup-wrapper {
-      font-family: 'Noto Sans', sans-serif;
-      /* Cambio a Noto Sans */
-      background: var(--fonatur-green);
-      /* Fondo verde solicitado */
+      font-family: 'Noto Sans', system-ui, -apple-system, sans-serif !important;
+      /* Forzar Noto Sans */
+      background: var(--fonatur-dark);
+      /* Cambio a fonatur-dark */
       padding: 10px;
       border-radius: 8px;
-      color: #333;
+      color: #ffffff;
+      /* Texto blanco para contraste con fondo oscuro */
       min-width: 280px;
     }
 
@@ -978,8 +979,8 @@
     }
 
     .leaflet-popup-tip {
-      background: var(--fonatur-green);
-      /* Punta del popup verde */
+      background: var(--fonatur-dark);
+      /* Punta del popup oscura */
     }
 
     /* FOOTER */
@@ -1319,8 +1320,8 @@
 
     <footer>
       <span>
-        Este sitio contiene información ilustrativa, para cualquier 
-        <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur.
+        Este sitio contiene información ilustrativa, para cualquier
+        <strong>duda o aclaración</strong> econtactar a la Dirección de Comercialización del Fonatur.
       </span>
     </footer>
   </div>
@@ -1834,7 +1835,10 @@
               easeLinearity: 0.25
             });
 
-            layer.openPopup();
+            // CORRECCIÓN JITTER: Abrir popup SOLO cuando termine el vuelo
+            map.once('moveend', function () {
+              layer.openPopup();
+            });
           }
         });
 
