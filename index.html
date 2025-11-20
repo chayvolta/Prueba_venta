@@ -455,6 +455,8 @@
     }
 
     .filter-chip {
+      font-family: 'Noto Sans', sans-serif;
+      /* Asegurar fuente Noto Sans */
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.8);
       background: rgba(255, 255, 255, 0.9);
@@ -1188,7 +1190,7 @@
               </div>
               <p class="hero-note">
                 La superficie total y el conteo de lotes se calculan a partir de los atributos de tu
-                archivo <strong>Prueba_1.geojson</strong>.
+                archivo <strong>Prueba_2.geojson</strong>.
               </p>
             </div>
           </div>
@@ -1200,7 +1202,7 @@
           <div>
             <h2 class="dashboard-title">Panel de lotes georreferenciados</h2>
             <p class="dashboard-subtitle">
-              Carga automáticamente el archivo <strong>Prueba_1.geojson</strong> (FeatureCollection
+              Carga automáticamente el archivo <strong>Prueba_2.geojson</strong> (FeatureCollection
               con MultiPolygon) y muestra los polígonos estilizados por
               <em>disponibilidad</em>, <em>desarrollo</em>, <em>sección</em> y <em>uso de suelo</em>.
             </p>
@@ -1321,7 +1323,7 @@
     <footer>
       <span>
         Este sitio contiene información ilustrativa, para cualquier
-        <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur.
+        <strong>duda o aclaración</strong> econtactar a la Dirección de Comercialización del Fonatur.
       </span>
     </footer>
   </div>
@@ -1378,7 +1380,7 @@
 
       function getUsoFromProps(p) {
         return (
-          (p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '')
+          (p['Descripci___'] || p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '')
             .toString()
             .trim() || ''
         );
@@ -1526,10 +1528,10 @@
       }
 
       function loadGeoJSON() {
-        fetch('Prueba_1.geojson')
+        fetch('Prueba_2.geojson')
           .then(function (response) {
             if (!response.ok) {
-              throw new Error('No se pudo cargar Prueba_1.geojson');
+              throw new Error('No se pudo cargar Prueba_2.geojson');
             }
             return response.json();
           })
@@ -1545,7 +1547,7 @@
             var alertBox = document.getElementById('geojson-error');
             if (alertBox) {
               alertBox.textContent =
-                'No se pudo cargar el archivo de lotes. Verifica que "Prueba_1.geojson" esté en la misma carpeta que este archivo HTML o ajusta la ruta en el código.';
+                'No se pudo cargar el archivo de lotes. Verifica que "Prueba_2.geojson" esté en la misma carpeta que este archivo HTML o ajusta la ruta en el código.';
               alertBox.style.display = 'block';
             }
           });
@@ -1770,14 +1772,16 @@
 
       function makeLotItem(feature, layer) {
         var props = feature.properties || {};
-        var desar = props['04-04Desar'] || '';
-        var secci = props['04-04Secci'] || '';
-        var manza = props['04-04Manza'] || '';
-        var loteId = props['04-04Lote'] || '';
-        var dispo = props['04-04Dispo'] || '';
+        // Mapeo de nuevas columnas de Prueba_2.geojson
+        var desar = props['Desarrollo'] || props['04-04Desar'] || '';
+        var secci = props['Secci__n'] || props['04-04Secci'] || '';
+        var manza = props['Manzana'] || props['04-04Manza'] || '';
+        var loteId = props['Lote'] || props['04-04Lote'] || '';
+        // Estatus por defecto Disponible si no existe columna
+        var dispo = props['Estatus'] || props['04-04Dispo'] || 'Disponible';
         var uso = getUsoFromProps(props);
-        var sup = props['04-04Super'] || '';
-        var precio = props['04-04Preci'] || '';
+        var sup = props['Superficie'] || props['04-04Super'] || '';
+        var precio = props['Precio'] || props['04-04Preci'] || ''; // Se mantiene por si acaso
         var nombreAttr = props.Nombre || '';
 
         var loteName = loteId ? 'Lote ' + loteId : nombreAttr || 'Lote sin nombre';
@@ -1792,7 +1796,7 @@
           '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' +
           '</header>' +
 
-          '<div class="custom-popup-caption">FICHA TÉCNICA DEL LOTE</div>' +
+          '<div class="custom-popup-caption">Información del lote</div>' +
 
           '<table class="custom-popup-table">' +
           '<tr><th>Desarrollo</th><td>' + escapeHtml(desar) + '</td></tr>' +
