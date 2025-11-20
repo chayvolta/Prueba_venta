@@ -552,6 +552,8 @@
     }
 
     .selector-select {
+      font-family: 'Noto Sans', sans-serif;
+      /* Fuente Noto Sans */
       border-radius: 999px;
       border: 1px solid rgba(209, 213, 219, 0.9);
       background: #f9fafb;
@@ -1561,17 +1563,15 @@
 
         geojsonData.features.forEach(function (feature) {
           var p = feature.properties || {};
-          var dev = p['04-04Desar'];
-          var sec = p['04-04Secci'];
+          // Nuevos nombres de columnas
+          var d = p['Desarrollo'] || p['04-04Desar'] || 'Desconocido';
+          var s = p['Secci__n'] || p['04-04Secci'] || 'Sin Sección';
 
-          if (sec && sec.toString().trim()) {
-            allSectionsSet[sec] = true;
+          if (!devToSections[d]) {
+            devToSections[d] = {};
           }
-
-          if (dev && dev.toString().trim() && sec && sec.toString().trim()) {
-            if (!devToSections[dev]) devToSections[dev] = {};
-            devToSections[dev][sec] = true;
-          }
+          devToSections[d][s] = true;
+          allSectionsSet[s] = true;
         });
       }
 
@@ -1620,8 +1620,12 @@
 
         geojsonData.features.forEach(function (feature) {
           var p = feature.properties || {};
-          if (currentDesarrollo !== 'all' && p['04-04Desar'] !== currentDesarrollo) return;
-          if (currentSeccion !== 'all' && p['04-04Secci'] !== currentSeccion) return;
+          // Nuevos nombres de columnas
+          var d = p['Desarrollo'] || p['04-04Desar'];
+          var s = p['Secci__n'] || p['04-04Secci'];
+
+          if (currentDesarrollo !== 'all' && d !== currentDesarrollo) return;
+          if (currentSeccion !== 'all' && s !== currentSeccion) return;
           var uso = getUsoFromProps(p);
           if (uso) usosSet[uso] = true;
         });
@@ -1872,12 +1876,15 @@
           filter: function (feature) {
             if (!dispoFilter(feature)) return false;
             var p = feature.properties || {};
+            // Nuevos nombres de columnas
+            var d = p['Desarrollo'] || p['04-04Desar'];
+            var s = p['Secci__n'] || p['04-04Secci'];
 
-            if (currentDesarrollo !== 'all' && p['04-04Desar'] !== currentDesarrollo) {
+            if (currentDesarrollo !== 'all' && d !== currentDesarrollo) {
               return false;
             }
 
-            if (currentSeccion !== 'all' && p['04-04Secci'] !== currentSeccion) {
+            if (currentSeccion !== 'all' && s !== currentSeccion) {
               return false;
             }
 
@@ -1973,12 +1980,13 @@
 
         items.forEach(function (item) {
           var p = item.props || {};
-          var d = p['04-04Dispo'];
+          // Estatus por defecto Disponible
+          var d = p['Estatus'] || p['04-04Dispo'] || 'Disponible';
 
           if (d === 'Disponible') available++;
           else if (d === 'En Proceso de Alta' || d === 'V. En Proceso') process++;
 
-          var supStr = p['04-04Super'];
+          var supStr = p['Superficie'] || p['04-04Super'];
           var area = parseSurface(supStr);
           if (!isNaN(area)) {
             totalArea += area;
@@ -2044,7 +2052,7 @@
             '</div>' +
             '<div>' +
             '<h4 class="lot-name">' +
-            escapeHtml(loteId ? 'Lote ' + loteId + (manza ? ' · Mza ' + manza : '') : 'Lote') +
+            escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') +
             '</h4>' +
             '<p class="lot-location">' +
             escapeHtml(secci || '') +
