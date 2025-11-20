@@ -2031,13 +2031,14 @@
 
         items.slice(0, maxItems).forEach(function (item) {
           var props = item.props || {};
-          var loteId = props['04-04Lote'] || '';
-          var manza = props['04-04Manza'] || '';
-          var secci = props['04-04Secci'] || '';
-          var desar = props['04-04Desar'] || '';
-          var dispo = props['04-04Dispo'] || '';
-          var sup = props['04-04Super'] || '';
-          var precio = props['04-04Preci'] || '';
+          // Nuevos nombres de columnas
+          var loteId = props['Lote'] || props['04-04Lote'] || '';
+          var manza = props['Manzana'] || props['04-04Manza'] || '';
+          var secci = props['Secci__n'] || props['04-04Secci'] || '';
+          var desar = props['Desarrollo'] || props['04-04Desar'] || '';
+          var dispo = props['Estatus'] || props['04-04Dispo'] || 'Disponible';
+          var sup = props['Superficie'] || props['04-04Super'] || '';
+          var precio = props['Precio'] || props['04-04Preci'] || '';
           var uso = getUsoFromProps(props);
 
           var card = document.createElement('button');
