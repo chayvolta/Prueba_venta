@@ -364,7 +364,8 @@
 
     /* DASHBOARD */
     .dashboard {
-      max-width: 1400px;
+      max-width: 95%;
+      /* Más ancho como se solicitó */
       margin: 0 auto 3rem;
       padding: 0.3rem 2.5rem 2.5rem;
     }
@@ -1181,6 +1182,10 @@
                 onclick="document.getElementById('dashboard-section').scrollIntoView({behavior: 'smooth'})">
                 Ver mapa interactivo
               </button>
+              <button class="btn btn-ghost"
+                onclick="document.querySelector('.lot-list-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });">
+                Ver listado resumido
+              </button>
               <button class="btn btn-ghost" onclick="resetAllFiltersAndView()">
                 Restablecer vista
               </button>
@@ -1225,86 +1230,93 @@
 
           <div class="filters-row">
             <div class="filter-chips">
-              <button class="filter-chip is-active" type="button" data-filter="all">
+              <button class="filter-chip is-active" data-filter="all">
                 <span class="filter-chip-dot"></span>
-                <span>Todos</span>
+                Todos
               </button>
-              <button class="filter-chip" type="button" data-filter="available">
-                <span class="filter-chip-dot"></span>
-                <span>Disponibles</span>
+              <button class="filter-chip" data-filter="habitacional">
+                <span class="filter-chip-dot" style="background:#34d399"></span>
+                Habitacional
               </button>
-              <button class="filter-chip" type="button" data-filter="process">
-                <span class="filter-chip-dot"></span>
-                <span>En proceso / alta</span>
+              <button class="filter-chip" data-filter="comercial">
+                <span class="filter-chip-dot" style="background:#60a5fa"></span>
+                Comercial / Mixto
               </button>
-              <button class="filter-chip" type="button" data-filter="nodisp">
-                <span class="filter-chip-dot"></span>
-                <span>No disponibles</span>
+              <button class="filter-chip" data-filter="turistico">
+                <span class="filter-chip-dot" style="background:#f472b6"></span>
+                Turístico / Hotelero
               </button>
             </div>
+
             <div class="filters-right">
-              <span class="badge-soft">Fuente: atributos "04-04Dispo" y "04-04Super" del GeoJSON</span>
-            </div>
-          </div>
-
-          <div class="selector-row">
-            <div class="selector-group">
-              <span class="selector-label">Desarrollo</span>
-              <select id="dev-select" class="selector-select">
-                <option value="all">Todos los desarrollos</option>
-              </select>
-            </div>
-            <div class="selector-group">
-              <span class="selector-label">Sección</span>
-              <select id="sec-select" class="selector-select">
-                <option value="all">Todas las secciones</option>
-              </select>
-            </div>
-            <div class="selector-group">
-              <span class="selector-label">Uso de suelo</span>
-              <select id="uso-select" class="selector-select">
-                <option value="all">Todos los usos</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="map-and-list">
-            <div class="map-wrapper">
-              <div class="map-toolbar">
-                <button class="map-list-toggle" type="button" id="mobile-list-toggle">
-                  <span class="icon">☰</span>
-                  <span>Lista de lotes</span>
-                </button>
-                <div class="map-toolbar-group">
-                  <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
-                  <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
+              <div class="selector-row">
+                <div class="selector-group">
+                  <label class="selector-label" for="dev-select">Desarrollo</label>
+                  <select id="dev-select" class="selector-select">
+                    <option value="all">Todos los desarrollos</option>
+                  </select>
+                </div>
+                <div class="selector-group">
+                  <label class="selector-label" for="sec-select">Sección</label>
+                  <select id="sec-select" class="selector-select">
+                    <option value="all">Todas las secciones</option>
+                  </select>
+                </div>
+                <div class="selector-group">
+                  <label class="selector-label" for="uso-select">Uso de Suelo</label>
+                  <select id="uso-select" class="selector-select">
+                    <option value="all">Todos los usos</option>
+                  </select>
+                </div>
+                <!-- NUEVO SELECTOR DE SUPERFICIE -->
+                <div class="selector-group">
+                  <label class="selector-label" for="surface-select">Superficie</label>
+                  <select id="surface-select" class="selector-select">
+                    <option value="all">Cualquier tamaño</option>
+                    <option value="range1">&lt; 500 m²</option>
+                    <option value="range2">500 - 1,000 m²</option>
+                    <option value="range3">&gt; 1,000 m²</option>
+                  </select>
                 </div>
               </div>
-              <div id="map"></div>
-              <p class="map-caption">
-                Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) en tono rojizo
-                con resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
-              </p>
-            </div>
 
-            <aside class="lot-list-panel">
-              <div class="lot-list-header">
-                <div>
-                  <div class="lot-list-title">Portafolio resumido</div>
-                  <div class="lot-list-count" id="lot-list-count">—</div>
+              <div class="map-and-list">
+                <div class="map-wrapper">
+                  <div class="map-toolbar">
+                    <button class="map-list-toggle" type="button" id="mobile-list-toggle">
+                      <span class="icon">☰</span>
+                      <span>Lista de lotes</span>
+                    </button>
+                    <div class="map-toolbar-group">
+                      <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
+                      <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
+                    </div>
+                  </div>
+                  <div id="map"></div>
+                  <p class="map-caption">
+                    Mapa base con opciones claro y satélite + capa de polígonos de lotes (MultiPolygon) en tono rojizo
+                    con resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
+                  </p>
                 </div>
-                <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
-              </div>
-              <div class="search-input-wrapper">
-                <span class="search-input-icon">🔍</span>
-                <input id="search-input" type="search"
-                  placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
-              </div>
-              <div class="lot-list-scroll" id="lot-list"></div>
-            </aside>
-          </div>
 
-          <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
+                <aside class="lot-list-panel">
+                  <div class="lot-list-header">
+                    <div>
+                      <div class="lot-list-title">Portafolio resumido</div>
+                      <div class="lot-list-count" id="lot-list-count">—</div>
+                    </div>
+                    <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
+                  </div>
+                  <div class="search-input-wrapper">
+                    <span class="search-input-icon">🔍</span>
+                    <input id="search-input" type="search"
+                      placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
+                  </div>
+                  <div class="lot-list-scroll" id="lot-list"></div>
+                </aside>
+              </div>
+
+              <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
       </section>
     </main>
 
@@ -1676,7 +1688,14 @@
 
         if (usoSelect) {
           usoSelect.addEventListener('change', function () {
-            currentUsoSuelo = usoSelect.value || 'all';
+            currentUsoSuelo = this.value;
+            renderLots(currentFilter);
+          });
+        }
+
+        var surfaceSelect = document.getElementById('surface-select');
+        if (surfaceSelect) {
+          surfaceSelect.addEventListener('change', function () {
             renderLots(currentFilter);
           });
         }
@@ -1689,31 +1708,28 @@
           };
         }
 
-        // Filtros por Rango de Superficie
-        if (filterName === 'range1') { // < 500 m²
+        // Filtros por Vocación (Categorías de Uso de Suelo)
+        if (filterName === 'habitacional') {
           return function (feature) {
             var p = feature.properties || {};
-            var supStr = p['Superficie'] || p['04-04Super'];
-            var area = parseSurface(supStr);
-            return !isNaN(area) && area < 500;
+            var uso = getUsoFromProps(p).toLowerCase();
+            return uso.includes('unifamiliar') || uso.includes('plurifamiliar') || uso.includes('residencial') || uso.includes('habitacional');
           };
         }
 
-        if (filterName === 'range2') { // 500 - 1,000 m²
+        if (filterName === 'comercial') {
           return function (feature) {
             var p = feature.properties || {};
-            var supStr = p['Superficie'] || p['04-04Super'];
-            var area = parseSurface(supStr);
-            return !isNaN(area) && area >= 500 && area <= 1000;
+            var uso = getUsoFromProps(p).toLowerCase();
+            return uso.includes('comercial') || uso.includes('mixto') || uso.includes('equipamiento');
           };
         }
 
-        if (filterName === 'range3') { // > 1,000 m²
+        if (filterName === 'turistico') {
           return function (feature) {
             var p = feature.properties || {};
-            var supStr = p['Superficie'] || p['04-04Super'];
-            var area = parseSurface(supStr);
-            return !isNaN(area) && area > 1000;
+            var uso = getUsoFromProps(p).toLowerCase();
+            return uso.includes('hotelero') || uso.includes('turístico') || uso.includes('turistico');
           };
         }
 
@@ -1905,6 +1921,20 @@
               if (usoVal !== currentUsoSuelo) {
                 return false;
               }
+            }
+
+            // Filtro por Superficie (Dropdown)
+            var surfaceSelect = document.getElementById('surface-select');
+            if (surfaceSelect && surfaceSelect.value !== 'all') {
+              var range = surfaceSelect.value;
+              var supStr = p['Superficie'] || p['04-04Super'];
+              var area = parseSurface(supStr);
+
+              if (isNaN(area)) return false;
+
+              if (range === 'range1' && area >= 500) return false; // < 500
+              if (range === 'range2' && (area < 500 || area > 1000)) return false; // 500 - 1000
+              if (range === 'range3' && area <= 1000) return false; // > 1000
             }
 
             return true;
@@ -2208,6 +2238,7 @@
         var devSelect = document.getElementById('dev-select');
         var secSelect = document.getElementById('sec-select');
         var usoSelect = document.getElementById('uso-select');
+        var surfaceSelect = document.getElementById('surface-select'); // Nuevo
         var searchInput = document.getElementById('search-input');
 
         if (devSelect) devSelect.value = 'all';
@@ -2215,6 +2246,7 @@
         if (secSelect) secSelect.value = 'all';
         populateUsoOptions();
         if (usoSelect) usoSelect.value = 'all';
+        if (surfaceSelect) surfaceSelect.value = 'all'; // Resetear superficie
         if (searchInput) searchInput.value = '';
 
         // Vista general México
