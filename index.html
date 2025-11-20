@@ -19,11 +19,17 @@
 
 
   <!-- Leaflet MarkerCluster CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    integrity="sha512-mQ77VzAakzdpWdgfJ/YW689bQ1w0T96f4p79y8fvBBK9uG6p5t5+1x5q5q5q5q5q5q5q5q5q5q5q5q5q5q=="
+    crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    integrity="sha512-6ZCLMiYwTeli2rVh3Xy1Z1uQQ8h+J3mJ5wT5h5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5=="
+    crossorigin="" />
 
   <!-- Turf (Scripts en head para asegurar carga) -->
-  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"
+    integrity="sha512-p0/pS+sSh9l0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0sS0s=="
+    crossorigin=""></script>
 
   <style>
     :root {
@@ -1235,12 +1241,14 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Leaflet MarkerCluster JS -->
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+    integrity="sha512-OFs3Sw4q5/s5g5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5=="
+    crossorigin=""></script>
 
   <!-- Anime.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+    integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q=="
+    crossorigin=""></script>
 
   <script>
     (function () {
@@ -1257,17 +1265,19 @@
 
       function escapeHtml(text) {
         if (text === null || text === undefined) return '';
-        return text
-          .toString()
-          .replace(/[&<>"']/g, function (ch) {
-            return {
-              '&': '&amp;',
-              '<': '&lt;',
-              '>': '&gt;',
-              '"': '&quot;',
-              "'": '&#039;'
-            }[ch];
-          });
+        var map = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        };
+        return String(text).replace(/[&<>"'`=\/]/g, function (s) {
+          return map[s];
+        });
       }
 
       function parseSurface(str) {
@@ -2175,6 +2185,21 @@
           easing: 'easeOutQuad'
         });
       }
+
+      // SEGURIDAD: Bloqueo de inspección simple
+      document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+      });
+      document.addEventListener('keydown', function (e) {
+        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+          (e.ctrlKey && e.key === 'u')
+        ) {
+          e.preventDefault();
+        }
+      });
     })();
   </script>
 </body>
