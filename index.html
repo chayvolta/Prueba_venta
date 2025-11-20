@@ -1082,9 +1082,14 @@
 
       .hero {
         padding-inline: 1.2rem;
+        margin-left: 0 !important;
       }
 
       .hero-inner {
+        width: 80% !important;
+        margin-left: 0 !important;
+        margin-right: auto;
+        padding: 3rem !important;
         grid-template-columns: minmax(0, 1fr);
       }
 
@@ -1144,7 +1149,44 @@
       }
 
       .hero-inner {
-        padding: 1.7rem 1.5rem 1.5rem;
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 2rem !important;
+      }
+
+      .hero-features {
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+
+      .hero-metric-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      /* POPUP RESPONSIVE */
+      .custom-popup-wrapper {
+        min-width: 250px !important;
+        max-width: 90vw !important;
+      }
+
+      .popup-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .popup-hero-title {
+        font-size: 1.1rem !important;
+      }
+
+      .popup-hero-subtitle {
+        font-size: 0.75rem !important;
+      }
+
+      .popup-value {
+        font-size: 0.8rem !important;
       }
 
       .stats-row {
@@ -2054,10 +2096,17 @@
 
         updateLayerVisibility();
 
-        // ELIMINADO: map.fitBounds para evitar saltos de posición
-        // if (lotItems.length > 0 && lotLayer) {
-        //   map.fitBounds(lotLayer.getBounds(), { padding: [12, 12] });
-        // }
+        // Zoom automático solo en mobile después de filtrar
+        if (window.innerWidth <= 960 && lotItems.length > 0 && lotLayer) {
+          try {
+            var bounds = lotLayer.getBounds();
+            if (bounds.isValid()) {
+              map.fitBounds(bounds, { padding: [20, 20] });
+            }
+          } catch (e) {
+            console.warn('No se pudo ajustar el zoom:', e);
+          }
+        }
 
         updateStatsFromItems(lotItems);
         buildLotList(lotItems);
