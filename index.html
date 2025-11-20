@@ -364,7 +364,7 @@
 
     /* DASHBOARD */
     .dashboard {
-      max-width: 95%;
+      max-width: 90%;
       /* Más ancho como se solicitó */
       margin: 0 auto 3rem;
       padding: 0.3rem 0;
@@ -953,6 +953,17 @@
       font-weight: 500;
     }
 
+    .hero-inner {
+      max-width: 90%;
+      /* Mismo ancho que el dashboard/mapa */
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 4rem;
+      padding: 2.5rem 0;
+      /* Quitamos padding lateral */
+    }
+
     .popup-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1233,25 +1244,6 @@
           </div>
 
           <div class="filters-row">
-            <div class="filter-chips">
-              <button class="filter-chip is-active" data-filter="all">
-                <span class="filter-chip-dot"></span>
-                Todos
-              </button>
-              <button class="filter-chip" data-filter="habitacional">
-                <span class="filter-chip-dot" style="background:#34d399"></span>
-                Habitacional
-              </button>
-              <button class="filter-chip" data-filter="comercial">
-                <span class="filter-chip-dot" style="background:#60a5fa"></span>
-                Comercial / Mixto
-              </button>
-              <button class="filter-chip" data-filter="turistico">
-                <span class="filter-chip-dot" style="background:#f472b6"></span>
-                Turístico / Hotelero
-              </button>
-            </div>
-
             <div class="filters-right">
               <div class="selector-row">
                 <div class="selector-group">
@@ -1282,6 +1274,26 @@
                     <option value="range3">&gt; 1,000 m²</option>
                   </select>
                 </div>
+              </div>
+
+              <!-- BOTONES RÁPIDOS MOVIDOS AQUÍ -->
+              <div class="filter-chips" style="margin-left: 1rem;">
+                <button class="filter-chip is-active" data-filter="all">
+                  <span class="filter-chip-dot"></span>
+                  Todos
+                </button>
+                <button class="filter-chip" data-filter="habitacional">
+                  <span class="filter-chip-dot" style="background:#34d399"></span>
+                  Habitacional
+                </button>
+                <button class="filter-chip" data-filter="comercial">
+                  <span class="filter-chip-dot" style="background:#60a5fa"></span>
+                  Comercial / Mixto
+                </button>
+                <button class="filter-chip" data-filter="turistico">
+                  <span class="filter-chip-dot" style="background:#f472b6"></span>
+                  Turístico / Hotelero
+                </button>
               </div>
 
               <div class="map-and-list">
