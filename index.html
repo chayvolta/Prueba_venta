@@ -886,6 +886,102 @@
       font-weight: 500;
     }
 
+    /* ESTILOS PERSONALIZADOS DEL POPUP (Ficha Técnica) */
+    .custom-popup-wrapper {
+      font-family: 'Noto Sans', sans-serif;
+      /* Cambio a Noto Sans */
+      background: var(--fonatur-green);
+      /* Fondo verde solicitado */
+      padding: 10px;
+      border-radius: 8px;
+      color: #333;
+      min-width: 280px;
+    }
+
+    .custom-popup-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      background: #fff;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .custom-popup-header img {
+      max-height: 40px;
+      margin-right: 10px;
+    }
+
+    .custom-popup-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .custom-popup-caption {
+      font-size: 12px;
+      font-family: 'Noto Sans', sans-serif;
+      font-weight: 700;
+      /* Negrita solicitada */
+      color: #FFFFFF;
+      background-color: #B38E5D;
+      /* Dorado oficial */
+      padding: 8px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .custom-popup-table th {
+      text-align: right;
+      padding: 4px 8px;
+      border: 1px solid #D6D6D6;
+      background-color: #FFFFFF;
+      color: #333;
+      width: 40%;
+      font-weight: 700;
+      /* Negrita para encabezados de tabla */
+    }
+
+    .custom-popup-table td {
+      text-align: left;
+      padding: 4px 8px;
+      border: 1px solid #D6D6D6;
+      background-color: #F2F2F2;
+      font-weight: 600;
+      color: #000;
+    }
+
+    .custom-popup-footer {
+      font-size: 9px;
+      text-align: right;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 5px;
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    /* Ajustes para Leaflet Popup */
+    .leaflet-popup-content-wrapper {
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+      /* Dejar que nuestro wrapper controle el fondo */
+      box-shadow: none;
+      /* Sombra personalizada si se desea */
+    }
+
+    .leaflet-popup-content {
+      margin: 0 !important;
+      width: auto !important;
+    }
+
+    .leaflet-popup-tip {
+      background: var(--fonatur-green);
+      /* Punta del popup verde */
+    }
+
     /* FOOTER */
     footer {
       padding: 1rem 2.5rem 1.5rem;
@@ -1685,16 +1781,30 @@
 
         var loteName = loteId ? 'Lote ' + loteId : nombreAttr || 'Lote sin nombre';
 
+        // Formatear superficie con comas
+        var supFormatted = sup ? parseFloat(sup).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+
+        // Construcción del HTML personalizado (Ficha Técnica)
         var popupHtml =
-          '<div class="popup-lot">' +
-          '<h3>' + escapeHtml(loteName) + '</h3>' +
-          '<p class="popup-location"><strong>Desarrollo:</strong> ' + escapeHtml(desar) + '</p>' +
-          (secci ? '<p><strong>Sección:</strong> ' + escapeHtml(secci) + '</p>' : '') +
-          (manza ? '<p><strong>Manzana:</strong> ' + escapeHtml(manza) + '</p>' : '') +
-          (uso ? '<p><strong>Uso de suelo:</strong> ' + escapeHtml(uso) + '</p>' : '') +
-          (sup ? '<p><strong>Superficie:</strong> ' + escapeHtml(sup) + ' m²</p>' : '') +
-          (precio ? '<p><strong>Precio referencia:</strong> ' + escapeHtml(precio) + '</p>' : '') +
-          (dispo ? '<p><strong>Estatus:</strong> ' + escapeHtml(dispo) + '</p>' : '') +
+          '<div class="custom-popup-wrapper">' +
+          '<header class="custom-popup-header">' +
+          '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' +
+          '</header>' +
+
+          '<div class="custom-popup-caption">FICHA TÉCNICA DEL LOTE</div>' +
+
+          '<table class="custom-popup-table">' +
+          '<tr><th>Desarrollo</th><td>' + escapeHtml(desar) + '</td></tr>' +
+          '<tr><th>Sección</th><td>' + escapeHtml(secci) + '</td></tr>' +
+          '<tr><th>Manzana</th><td>' + escapeHtml(manza) + '</td></tr>' +
+          '<tr><th>Lote</th><td>' + escapeHtml(loteId) + '</td></tr>' +
+          '<tr><th>Superficie (m²)</th><td>' + escapeHtml(supFormatted) + '</td></tr>' +
+          '<tr><th>Uso de Suelo</th><td>' + escapeHtml(uso) + '</td></tr>' +
+          '<tr><th>Estatus</th><td>' + escapeHtml(dispo) + '</td></tr>' +
+          (precio ? '<tr><th>Precio Ref.</th><td>' + escapeHtml(precio) + '</td></tr>' : '') +
+          '</table>' +
+
+          '<div class="custom-popup-footer">FONATUR · Comercialización</div>' +
           '</div>';
 
         layer.bindPopup(popupHtml);
