@@ -158,10 +158,10 @@
     }
 
     .hero-inner {
-      max-width: 90%;
+      max-width: 95%;
       margin: 0 auto;
       border-radius: var(--radius-xl);
-      padding: 3.5rem 4rem;
+      padding: 2.5rem 5rem;
       background: linear-gradient(135deg, rgba(0, 107, 79, 0.96), rgba(0, 165, 139, 0.96));
       color: #ffffff;
       box-shadow: var(--shadow-soft);
@@ -370,7 +370,27 @@
     .hero-metric-value {
       font-weight: 700;
       font-size: 1.15rem;
-      color: var(--fonatur-green);
+      color: #ffffff;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-feature-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #ecfdf5;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.35rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* DASHBOARD */
@@ -1192,6 +1212,19 @@
             <div class="hero-subtitle">
               Explora oportunidades de inversión en destinos turísticos estratégicos.
               <strong>Información oficial y actualizada.</strong>
+            </div>
+
+            <!-- NUEVOS BADGES DE CONFIANZA -->
+            <div class="hero-features">
+              <div class="hero-feature-item">
+                <span>⚖️</span> <span>Certeza Jurídica</span>
+              </div>
+              <div class="hero-feature-item">
+                <span>📄</span> <span>Propiedad Privada</span>
+              </div>
+              <div class="hero-feature-item">
+                <span>📍</span> <span>Ubicación Premium</span>
+              </div>
             </div>
 
             <!-- INDICADORES CLAVE MOVIDOS AQUÍ -->
