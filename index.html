@@ -2150,8 +2150,7 @@
             resetHighlight(e);
           },
           click: function () {
-            // OPCIÓN 3: FlyTo suave + OPCIÓN 2: Turf Centroid
-            // Usamos Turf para encontrar el centro visual real del polígono
+            // Calcular el centro del polígono usando Turf
             var center;
             try {
               var centroid = turf.centroid(feature);
@@ -2161,16 +2160,23 @@
               center = layer.getBounds().getCenter();
             }
 
-            // Efecto de vuelo suave (FlyTo)
+            // Determinar padding según el tamaño de pantalla
+            var isMobile = window.innerWidth <= 640;
+            var paddingOptions = isMobile
+              ? { paddingTopLeft: [20, 100] } // Móvil: más espacio arriba para el popup
+              : { paddingTopLeft: [50, 120] }; // Web: espacio para popup
+
+            // Hacer flyTo con padding y abrir popup inmediatamente después
             map.flyTo(center, 17, {
-              duration: 1.5, // Segundos
-              easeLinearity: 0.25
+              duration: 1.2,
+              easeLinearity: 0.25,
+              ...paddingOptions
             });
 
-            // CORRECCIÓN JITTER: Abrir popup SOLO cuando termine el vuelo
-            map.once('moveend', function () {
+            // Abrir popup después de un breve delay (para que flyTo inicie)
+            setTimeout(function () {
               layer.openPopup();
-            });
+            }, 100);
           }
         });
 
