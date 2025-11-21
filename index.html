@@ -1074,50 +1074,52 @@
     /* MEDIA QUERY ESPECÍFICA PARA POPUPS EN MÓVIL */
     @media (max-width: 640px) {
       .custom-popup-wrapper {
-        min-width: 190px !important;
-        max-width: 210px !important;
+        min-width: 140px !important;
+        max-width: 150px !important;
       }
 
       .custom-popup-header {
-        padding: 6px 10px;
+        padding: 4px 6px;
       }
 
       .custom-popup-header img {
-        height: 20px;
+        height: 16px;
       }
 
       .popup-hero {
-        padding: 8px;
+        padding: 6px;
       }
 
       .popup-hero-title {
-        font-size: 1rem;
+        font-size: 0.85rem;
       }
 
       .popup-hero-subtitle {
-        font-size: 0.75rem;
-      }
-
-      .popup-grid {
-        padding: 6px;
-        gap: 4px;
-      }
-
-      .popup-item {
-        padding: 4px;
-      }
-
-      .popup-label {
-        font-size: 0.55rem;
-      }
-
-      .popup-value {
         font-size: 0.65rem;
       }
 
-      .custom-popup-footer {
-        font-size: 0.55rem;
+      .popup-grid {
         padding: 4px;
+        gap: 2px;
+        grid-template-columns: 1fr;
+        /* Una sola columna para que quepa */
+      }
+
+      .popup-item {
+        padding: 2px;
+      }
+
+      .popup-label {
+        font-size: 0.45rem;
+      }
+
+      .popup-value {
+        font-size: 0.55rem;
+      }
+
+      .custom-popup-footer {
+        font-size: 0.45rem;
+        padding: 3px;
       }
     }
 
