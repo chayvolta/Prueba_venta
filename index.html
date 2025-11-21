@@ -27,10 +27,10 @@
 
   <style>
     :root {
-      --fonatur-green: #006b4f;
-      --fonatur-dark: #12322b;
+      --fonatur-green: #2d4f47;
+      --fonatur-dark: #1a2f29;
       --fonatur-teal: #00a58b;
-      --fonatur-gold: #f6b819;
+      --fonatur-gold: #d4a855;
       --fonatur-sand: #f3e4c4;
       --fonatur-light: #f5f7f6;
       --fonatur-border: #d1d5db;
@@ -1077,15 +1077,29 @@
       padding: 0;
       margin: 0;
       width: 100%;
-      background: #2d4f47;
+      background: var(--fonatur-green);
+      display: flex;
+      flex-direction: column;
     }
 
     footer .footer-image {
       width: 100%;
       height: auto;
       display: block;
-      max-height: 150px;
-      object-fit: contain;
+      max-height: 180px;
+      object-fit: cover;
+    }
+
+    footer span {
+      padding: 1rem 2rem 1.5rem;
+      font-size: 0.76rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      background: var(--fonatur-green);
+    }
+
+    footer strong {
+      color: rgba(255, 255, 255, 0.95);
     }
 
     @media (max-width: 960px) {
@@ -1147,6 +1161,16 @@
       .lot-panel-close {
         display: inline-flex;
       }
+
+      /* FOOTER RESPONSIVE - Tablet */
+      footer .footer-image {
+        max-height: 140px;
+      }
+
+      footer span {
+        padding: 0.8rem 1.5rem 1.2rem;
+        font-size: 0.72rem;
+      }
     }
 
     @media (max-width: 640px) {
@@ -1200,6 +1224,18 @@
 
       .popup-value {
         font-size: 0.8rem !important;
+      }
+
+      /* FOOTER RESPONSIVE - Mobile */
+      footer .footer-image {
+        max-height: 100px;
+        object-fit: contain;
+      }
+
+      footer span {
+        padding: 0.6rem 1rem 1rem;
+        font-size: 0.68rem;
+        line-height: 1.4;
       }
 
       .stats-row {
@@ -1438,16 +1474,15 @@
               <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
       </section>
     </main>
-
-    <footer>
-      <img src="footer-institucional.png" alt="Gobierno de México - Secretaría de Turismo - FONATUR"
-        class="footer-image">
-      <span>
-        Este sitio contiene información ilustrativa, para cualquier
-        <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur.
-      </span>
-    </footer>
   </div>
+
+  <footer>
+    <img src="footer-institucional.png" alt="Gobierno de México - Secretaría de Turismo - FONATUR" class="footer-image">
+    <span>
+      Este sitio contiene información ilustrativa, para cualquier
+      <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur.
+    </span>
+  </footer>
 
   <!-- Leaflet JS -->
   <!-- Leaflet JS -->
