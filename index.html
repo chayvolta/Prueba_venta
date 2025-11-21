@@ -1074,15 +1074,18 @@
 
     /* FOOTER */
     footer {
-      padding: 1rem 2.5rem 1.5rem;
-      font-size: 0.76rem;
-      color: #6b7280;
-      max-width: 1400px;
-      margin: 0 auto;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      background: #2d4f47;
     }
 
-    footer span {
-      opacity: 0.85;
+    footer .footer-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 150px;
+      object-fit: contain;
     }
 
     @media (max-width: 960px) {
@@ -1437,6 +1440,8 @@
     </main>
 
     <footer>
+      <img src="footer-institucional.png" alt="Gobierno de México - Secretaría de Turismo - FONATUR"
+        class="footer-image">
       <span>
         Este sitio contiene información ilustrativa, para cualquier
         <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur.
