@@ -152,8 +152,8 @@
 
     /* HERO */
     .hero {
-      width: 100%;
-      margin: 0 0 2rem 0;
+      max-width: 90%;
+      margin: 0 auto 2rem;
       padding: 0.3rem 0;
     }
 
@@ -1103,6 +1103,10 @@
         grid-template-columns: minmax(0, 1fr);
       }
 
+      .hero {
+        padding-inline: 1.2rem;
+      }
+
       .dashboard {
         padding-inline: 1.2rem;
       }
@@ -1156,11 +1160,6 @@
       .nav-items {
         width: 100%;
         justify-content: space-between;
-      }
-
-      .hero {
-        margin: 0 auto 2rem !important;
-        /* Centrar hero en mobile */
       }
 
       .hero-inner {
