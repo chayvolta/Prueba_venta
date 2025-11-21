@@ -1048,10 +1048,80 @@
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
-      gap: 4rem;
-      padding: 2.5rem 0;
-      /* Quitamos padding lateral */
     }
+
+    /* MEJORA BOTÓN CERRAR POPUP */
+    .leaflet-popup-close-button {
+      width: 24px !important;
+      height: 24px !important;
+      font-size: 18px !important;
+      line-height: 24px !important;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.1);
+      color: #333 !important;
+      top: 10px !important;
+      right: 10px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
+    .leaflet-popup-close-button:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* MEDIA QUERY ESPECÍFICA PARA POPUPS EN MÓVIL */
+    @media (max-width: 640px) {
+      .custom-popup-wrapper {
+        min-width: 190px !important;
+        max-width: 210px !important;
+      }
+
+      .custom-popup-header {
+        padding: 6px 10px;
+      }
+
+      .custom-popup-header img {
+        height: 20px;
+      }
+
+      .popup-hero {
+        padding: 8px;
+      }
+
+      .popup-hero-title {
+        font-size: 1rem;
+      }
+
+      .popup-hero-subtitle {
+        font-size: 0.75rem;
+      }
+
+      .popup-grid {
+        padding: 6px;
+        gap: 4px;
+      }
+
+      .popup-item {
+        padding: 4px;
+      }
+
+      .popup-label {
+        font-size: 0.55rem;
+      }
+
+      .popup-value {
+        font-size: 0.65rem;
+      }
+
+      .custom-popup-footer {
+        font-size: 0.55rem;
+        padding: 4px;
+      }
+    }
+
+
 
     .popup-grid {
       display: grid;
@@ -2048,7 +2118,9 @@
           '<div class="custom-popup-footer">Fondo Nacional de Fomento al Turismo</div>' +
           '</div>';
 
-        layer.bindPopup(popupHtml);
+        layer.bindPopup(popupHtml, {
+          autoPan: false // Desactivar autoPan para evitar conflicto con flyTo
+        });
 
         layer.on({
           mouseover: function (e) {
@@ -2193,12 +2265,12 @@
 
         updateLayerVisibility();
 
-        // Zoom automático solo en mobile después de filtrar
-        if (window.innerWidth <= 960 && lotItems.length > 0 && lotLayer) {
+        // Zoom automático al filtrar (para todos los dispositivos)
+        if (lotItems.length > 0 && lotLayer) {
           try {
             var bounds = lotLayer.getBounds();
             if (bounds.isValid()) {
-              map.fitBounds(bounds, { padding: [20, 20] });
+              map.fitBounds(bounds, { padding: [50, 50] });
             }
           } catch (e) {
             console.warn('No se pudo ajustar el zoom:', e);
