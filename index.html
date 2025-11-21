@@ -27,9 +27,9 @@
 
   <style>
     :root {
-      --fonatur-green: #344643;
+      --fonatur-green: #022f2a;
       --fonatur-dark: #1a2f29;
-      --fonatur-teal: #00a58b;
+      --fonatur-teal: #344643;
       --fonatur-gold: #d4a855;
       --fonatur-sand: #f3e4c4;
       --fonatur-light: #f5f7f6;
@@ -80,7 +80,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0.9rem 2.5rem;
-      background: linear-gradient(90deg, rgba(0, 107, 79, 0.96), rgba(0, 165, 139, 0.96));
+      background: #022f2a;
       color: #ffffff;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       backdrop-filter: blur(14px);
@@ -159,12 +159,12 @@
 
     .hero-inner {
       width: 50%;
-      margin-left: 5%;
-      /* Margen izquierdo del 5% para alinearse con el dashboard (que es 90% centrado) */
+      margin: 0 auto !important;
+      /* Centrado horizontalmente forzado */
       border-radius: var(--radius-xl);
       padding: 5rem !important;
       /* Padding forzado a 5rem para balance */
-      background: linear-gradient(135deg, rgba(0, 107, 79, 0.96), rgba(0, 165, 139, 0.96));
+      background: #022f2a;
       color: #ffffff;
       box-shadow: var(--shadow-soft);
       display: flex;
@@ -236,6 +236,7 @@
       font-size: 0.95rem;
       max-width: 40ch;
       opacity: 0.9;
+      text-align: justify;
     }
 
     .hero-subtitle strong {
@@ -484,7 +485,7 @@
       padding: 0.15rem 0.5rem;
       border-radius: 999px;
       background: rgba(16, 185, 129, 0.08);
-      color: #047857;
+      color: #344643;
     }
 
     .filters-row {
@@ -531,7 +532,7 @@
     .filter-chip.is-active {
       background: var(--fonatur-green);
       color: #f9fafb;
-      border-color: #064e3b;
+      border-color: #344643;
     }
 
     .filter-chip.is-active .filter-chip-dot {
@@ -639,6 +640,48 @@
       min-height: min(75vh, 820px);
       display: flex;
       flex-direction: column;
+      position: relative;
+      z-index: 50;
+    }
+
+    @media (min-width: 961px) {
+      .map-wrapper {
+        position: sticky;
+        top: 90px;
+      }
+    }
+
+    .reset-map-control {
+      margin-top: 10px !important;
+      margin-right: 10px !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+      border: none !important;
+    }
+
+    .reset-map-btn {
+      background: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--fonatur-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .reset-map-btn:hover {
+      background: #f3f4f6;
+      color: var(--fonatur-green);
+    }
+
+    .reset-map-btn span {
+      font-size: 1.1em;
+      font-weight: bold;
     }
 
     .map-toolbar {
@@ -695,7 +738,7 @@
     }
 
     .map-base-btn.is-active {
-      background: #006b4f;
+      background: #344643;
       color: #f9fafb;
     }
 
@@ -1074,7 +1117,7 @@
 
     /* FOOTER */
     footer {
-      padding: 0;
+      padding-top: 20px;
       margin: 0;
       width: 100%;
       background: var(--fonatur-green);
@@ -1111,13 +1154,14 @@
 
       .hero {
         padding-inline: 1.2rem;
-        margin-left: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        max-width: 90%;
       }
 
       .hero-inner {
         width: 80% !important;
-        margin-left: 0 !important;
-        margin-right: auto;
+        margin: 0 auto !important;
         padding: 3rem !important;
         grid-template-columns: minmax(0, 1fr);
       }
@@ -1190,7 +1234,7 @@
 
       .hero-inner {
         width: 100% !important;
-        margin-left: 0 !important;
+        margin: 0 auto !important;
         padding: 2rem !important;
       }
 
