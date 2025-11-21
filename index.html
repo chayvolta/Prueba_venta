@@ -1083,12 +1083,13 @@
     }
 
     footer .footer-image {
-      width: 100%;
+      width: auto;
+      max-width: 100%;
       height: auto;
       display: block;
+      margin: 0 auto;
       max-height: 180px;
       object-fit: contain;
-      background: var(--fonatur-green);
     }
 
     footer span {
@@ -1166,6 +1167,7 @@
       /* FOOTER RESPONSIVE - Tablet */
       footer .footer-image {
         max-height: 140px;
+        max-width: 90%;
       }
 
       footer span {
@@ -1230,6 +1232,7 @@
       /* FOOTER RESPONSIVE - Mobile */
       footer .footer-image {
         max-height: 100px;
+        max-width: 95%;
         object-fit: contain;
       }
 
