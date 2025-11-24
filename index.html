@@ -428,7 +428,7 @@
     .dashboard-header {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: flex-end;
       gap: 1rem;
       margin-bottom: 1rem;
@@ -540,6 +540,7 @@
       background: var(--fonatur-green);
       color: #f9fafb;
       border-color: #344643;
+      font-weight: 700;
     }
 
     .filter-chip.is-active .filter-chip-dot {
@@ -1565,65 +1566,70 @@
                     <option value="range3">&gt; 1,000 m²</option>
                   </select>
                 </div>
-              </div>
-
-              <!-- BOTONES RÁPIDOS MOVIDOS AQUÍ -->
-              <div class="filter-chips" style="margin-left: 1rem;">
-                <button class="filter-chip is-active" data-filter="all">
-                  <span class="filter-chip-dot"></span>
-                  Todos
-                </button>
-                <button class="filter-chip" data-filter="habitacional">
-                  <span class="filter-chip-dot" style="background:#34d399"></span>
-                  Habitacional
-                </button>
-                <button class="filter-chip" data-filter="comercial">
-                  <span class="filter-chip-dot" style="background:#60a5fa"></span>
-                  Comercial / Mixto
-                </button>
-                <button class="filter-chip" data-filter="turistico">
-                  <span class="filter-chip-dot" style="background:#f472b6"></span>
-                  Turístico / Hotelero
-                </button>
-              </div>
-
-              <div class="map-and-list">
-                <div class="map-wrapper">
-                  <div class="map-toolbar">
-                    <button class="map-list-toggle" type="button" id="mobile-list-toggle">
-                      <span class="icon">☰</span>
-                      <span>Lista de lotes</span>
+                <div class="selector-group" style="min-width: auto;">
+                  <div style="color: #ffffff; font-weight: 600; font-size: 0.8rem; margin-left: 6px;">
+                    Tipos de uso de suelo
+                  </div>
+                  <div class="filter-chips">
+                    <button class="filter-chip is-active" data-filter="all">
+                      <span class="filter-chip-dot"></span>
+                      Todos
                     </button>
-                    <div class="map-toolbar-group">
-                      <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
-                      <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
-                    </div>
+                    <button class="filter-chip" data-filter="habitacional">
+                      <span class="filter-chip-dot" style="background:#34d399"></span>
+                      Habitacional
+                    </button>
+                    <button class="filter-chip" data-filter="comercial">
+                      <span class="filter-chip-dot" style="background:#60a5fa"></span>
+                      Comercial / Mixto
+                    </button>
+                    <button class="filter-chip" data-filter="turistico">
+                      <span class="filter-chip-dot" style="background:#f472b6"></span>
+                      Turístico / Hotelero
+                    </button>
                   </div>
-                  <div id="map"></div>
-                  <p class="map-caption">
-                    Mapa base con informacion de ubicación y satélite, los lotes se encuentran en tono rojizo con
-                    resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
-                  </p>
                 </div>
-
-                <aside class="lot-list-panel">
-                  <div class="lot-list-header">
-                    <div>
-                      <div class="lot-list-title">Portafolio de lotes para Venta Directa</div>
-                      <div class="lot-list-count" id="lot-list-count">—</div>
-                    </div>
-                    <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
-                  </div>
-                  <div class="search-input-wrapper">
-                    <span class="search-input-icon">🔍</span>
-                    <input id="search-input" type="search"
-                      placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
-                  </div>
-                  <div class="lot-list-scroll" id="lot-list"></div>
-                </aside>
               </div>
+            </div>
+          </div>
 
-              <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
+          <div class="map-and-list">
+            <div class="map-wrapper">
+              <div class="map-toolbar">
+                <button class="map-list-toggle" type="button" id="mobile-list-toggle">
+                  <span class="icon">☰</span>
+                  <span>Lista de lotes</span>
+                </button>
+                <div class="map-toolbar-group">
+                  <button class="map-base-btn is-active" type="button" data-base="mapa">Mapa</button>
+                  <button class="map-base-btn" type="button" data-base="satellite">Satélite</button>
+                </div>
+              </div>
+              <div id="map"></div>
+              <p class="map-caption">
+                Mapa base con informacion de ubicación y satélite, los lotes se encuentran en tono rojizo con
+                resaltado al pasar el cursor y <em>zoom</em> al hacer clic.
+              </p>
+            </div>
+
+            <aside class="lot-list-panel">
+              <div class="lot-list-header">
+                <div>
+                  <div class="lot-list-title">Portafolio de lotes para Venta Directa</div>
+                  <div class="lot-list-count" id="lot-list-count">—</div>
+                </div>
+                <button class="lot-panel-close" type="button" id="mobile-list-close">✕</button>
+              </div>
+              <div class="search-input-wrapper">
+                <span class="search-input-icon">🔍</span>
+                <input id="search-input" type="search"
+                  placeholder="Buscar por lote, manzana, sección, desarrollo o uso de suelo" />
+              </div>
+              <div class="lot-list-scroll" id="lot-list"></div>
+            </aside>
+          </div>
+
+          <div id="mobile-list-backdrop" class="mobile-list-backdrop"></div>
       </section>
     </main>
   </div>
