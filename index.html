@@ -2171,7 +2171,7 @@
           (linkCatalogo ?
             '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' +
             '<span class="popup-label">Más información</span>' +
-            '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #cdab72; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' +
+            '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #ffffff; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' +
             '</div>' : '') +
           '</div>' +
 
@@ -2190,6 +2190,10 @@
             resetHighlight(e);
           },
           click: function () {
+            // Prevent overlapping animations
+            if (window.__popupAnimating) return;
+            window.__popupAnimating = true;
+
             // Calcular el centro del polígono usando Turf
             var center;
             try {
@@ -2201,23 +2205,27 @@
             }
 
             // Determinar padding según el tamaño de pantalla
-            // AUMENTADO: Se incrementó el padding superior para compensar la altura extra del popup
             var isMobile = window.innerWidth <= 640;
             var paddingOptions = isMobile
-              ? { paddingTopLeft: [20, 220] } // Móvil: aumentado de 180 a 220
-              : { paddingTopLeft: [50, 350] }; // Web: aumentado de 280 a 350
+              ? { paddingTopLeft: [20, 220] }
+              : { paddingTopLeft: [50, 350] };
 
-            // Hacer flyTo con padding y abrir popup inmediatamente después
+            // Fly to con transición más suave
             map.flyTo(center, 17, {
-              duration: 1.2,
-              easeLinearity: 0.25,
+              duration: 1.5,
+              easeLinearity: 0.5,
               ...paddingOptions
             });
 
-            // Abrir popup después de un breve delay (para que flyTo inicie)
+            // Resetear flag al terminar la animación del mapa
+            map.once('moveend', function () {
+              window.__popupAnimating = false;
+            });
+
+            // Abrir popup tras un pequeño retraso
             setTimeout(function () {
               layer.openPopup();
-            }, 100);
+            }, 150);
           }
         });
 
