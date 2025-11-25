@@ -2105,13 +2105,19 @@
         var dispo = props['Estatus'] || props['04-04Dispo'] || 'Disponible';
         var uso = getUsoFromProps(props);
         var sup = props['Superficie'] || props['04-04Super'] || '';
-        var precio = props['Precio'] || props['04-04Preci'] || ''; // Se mantiene por si acaso
-        var nombreAttr = props.Nombre || '';
 
+        // Nuevos campos solicitados
+        var precioSalida = props['Precio_Salida'] || props['Precio'] || props['04-04Preci'] || '';
+        var linkCatalogo = props['Link_Catalogo'] || ''; // Hipervínculo al catálogo
+
+        var nombreAttr = props.Nombre || '';
         var loteName = loteId ? 'Lote ' + loteId : nombreAttr || 'Lote sin nombre';
 
         // Formatear superficie con comas
         var supFormatted = sup ? parseFloat(sup).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+
+        // Formatear precio si existe
+        var precioFormatted = precioSalida ? precioSalida : ''; // Asumimos que viene formateado o es texto, si es número se podría formatear
 
         // Construcción del HTML personalizado (Tarjeta Moderna)
         var popupHtml =
@@ -2124,7 +2130,10 @@
 
           '<div class="popup-hero">' +
           '<div class="popup-hero-title">Lote ' + escapeHtml(loteId) + '</div>' +
-          '<div class="popup-hero-subtitle">' + escapeHtml(supFormatted) + ' m²</div>' +
+          '<div class="popup-hero-subtitle">' +
+          '<div>Superficie: ' + escapeHtml(supFormatted) + ' m²</div>' +
+          (precioFormatted ? '<div>Precio de salida: ' + escapeHtml(precioFormatted) + '</div>' : '') +
+          '</div>' +
           '</div>' +
 
           '<div class="popup-grid">' +
@@ -2148,10 +2157,10 @@
           '<span class="popup-label">Uso de Suelo</span>' +
           '<span class="popup-value">' + escapeHtml(uso) + '</span>' +
           '</div>' +
-          (precio ?
+          (linkCatalogo ?
             '<div class="popup-item popup-full-width">' +
-            '<span class="popup-label">Precio Ref.</span>' +
-            '<span class="popup-value">' + escapeHtml(precio) + '</span>' +
+            '<span class="popup-label">Más información</span>' +
+            '<span class="popup-value"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #cdab72; text-decoration: underline;">Ir al Catálogo</a></span>' +
             '</div>' : '') +
           '</div>' +
 
