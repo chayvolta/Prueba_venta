@@ -2327,6 +2327,48 @@
         buildLotList(lotItems);
       }
 
+      function animatePolygonsDraw() {
+        if (!window.anime) return;
+
+        // Esperar a que el DOM tenga los paths
+        setTimeout(function () {
+          var paths = document.querySelectorAll('.lot-polygon-path');
+          if (!paths.length) return;
+
+          // 1. Animación de Dibujado (Draw-in)
+          anime({
+            targets: paths,
+            strokeDashoffset: [anime.setDashoffset, 0],
+            strokeOpacity: {
+              value: [0, 1],
+              duration: 100,
+              easing: 'linear'
+            },
+            fillOpacity: {
+              value: [0, 0.3], // Opacidad final del relleno
+              duration: 600,
+              delay: 300,
+              easing: 'easeOutQuad'
+            },
+            duration: 1200,
+            delay: anime.stagger(5),
+            easing: 'easeOutCubic',
+            complete: function () {
+              // 2. Efecto de "Respiración Dorada" en bucle infinito
+              anime({
+                targets: paths,
+                stroke: '#ffd700', // Dorado
+                strokeWidth: 2,
+                duration: 2000, // Un poco más lento para que sea relajante
+                direction: 'alternate',
+                loop: true, // Bucle infinito
+                easing: 'easeInOutSine'
+              });
+            }
+          });
+        }, 100);
+      }
+
       function updateLayerVisibility() {
         if (isFlying) return; // No cambiar capas si está volando
 
@@ -2339,7 +2381,12 @@
         } else {
           // Si el zoom es alto (cerca), mostramos polígonos y ocultamos clusters
           if (map.hasLayer(markersClusterGroup)) map.removeLayer(markersClusterGroup);
-          if (!map.hasLayer(lotLayer) && lotLayer) map.addLayer(lotLayer);
+
+          // Solo si acabamos de añadir la capa (transición de cluster a polígono)
+          if (!map.hasLayer(lotLayer) && lotLayer) {
+            map.addLayer(lotLayer);
+            animatePolygonsDraw(); // <--- Disparar animación de dibujado
+          }
         }
       }
 
