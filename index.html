@@ -150,7 +150,7 @@
     }
 
     .nav-cta span:last-child {
-      font-size: 1.1rem;
+      font-weight: 700;
     }
 
     main {
@@ -1448,9 +1448,9 @@
       </div>
       <div class="nav-items">
         <div class="nav-pill"><strong>Venta Directa</strong>&nbsp;· Geoportal Institucional</div>
-        <button class="nav-cta" type="button">
-          <span>Vista general de lotes</span>
-          <span>▾</span>
+        <button class="nav-cta" type="button" onclick="startTour()">
+          <span>▶</span>
+          <span>Ver Tutorial</span>
         </button>
       </div>
     </header>
@@ -1666,6 +1666,75 @@
   <!-- Anime.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
+  <!-- Driver.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+
+  <style>
+    /* Driver.js Custom Theme */
+    .driver-popover.driverjs-theme {
+      background-color: #022f2a;
+      color: #ffffff;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-title {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #cdab72;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-description {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 0.9rem;
+      color: #ffffff;
+      line-height: 1.5;
+    }
+
+    .driver-popover.driverjs-theme button {
+      flex: 1;
+      text-align: center;
+      background-color: #cdab72;
+      color: #022f2a;
+      border: none;
+      text-shadow: none;
+      font-size: 14px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    .driver-popover.driverjs-theme button:hover {
+      background-color: #b5925a;
+      color: #022f2a;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-navigation-btns {
+      justify-content: space-between;
+      gap: 3px;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-close-btn {
+      color: #cdab72;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-arrow-side-left.driver-popover-arrow {
+      border-left-color: #022f2a;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-arrow-side-right.driver-popover-arrow {
+      border-right-color: #022f2a;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-arrow-side-top.driver-popover-arrow {
+      border-top-color: #022f2a;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-arrow-side-bottom.driver-popover-arrow {
+      border-bottom-color: #022f2a;
+    }
+  </style>
   <script>
     (function () {
       'use strict';
@@ -1677,26 +1746,29 @@
         fonaturGold: '#f6b819',
         grey: '#9ca3af',
         lotRed: '#dc2626' // rojo principal
-      };
+      }
+
+        ;
 
       function escapeHtml(text) {
         if (text === null || text === undefined) return '';
-        return text
-          .toString()
-          .replace(/[&<>"']/g, function (ch) {
-            return {
-              '&': '&amp;',
-              '<': '&lt;',
-              '>': '&gt;',
-              '"': '&quot;',
-              "'": '&#039;'
-            }[ch];
-          });
+
+        return text.toString().replace(/[&<>"']/g, function (ch) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+          }
+
+          [ch];
+        });
       }
 
       function parseSurface(str) {
         if (!str) return NaN;
-        var clean = str.toString().replace(/\s/g, '').replace(/,/g, '');
+        var clean = str.toString().replace(/\s/g, '').replace(/, /g, '');
         clean = clean.replace(/[^0-9.]/g, '');
         if (!clean) return NaN;
         var v = parseFloat(clean);
@@ -1704,15 +1776,15 @@
       }
 
       function getUsoFromProps(p) {
-        return (
-          (p['Descripci___'] || p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '')
-            .toString()
-            .trim() || ''
+        return ((p['Descripci___'] || p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '').toString().trim() || ''
         );
       }
 
       var map;
-      var baseLayers = {};
+
+      var baseLayers = {}
+
+        ;
       var baseLayer = null;
       var currentBaseKey = 'mapa';
 
@@ -1729,8 +1801,13 @@
       var currentSeccion = 'all';
       var currentUsoSuelo = 'all';
 
-      var devToSections = {};
-      var allSectionsSet = {};
+      var devToSections = {}
+
+        ;
+
+      var allSectionsSet = {}
+
+        ;
 
       document.addEventListener('DOMContentLoaded', initApp);
 
@@ -1757,7 +1834,9 @@
         var ResetControl = L.Control.extend({
           options: {
             position: 'topright'
-          },
+          }
+
+          ,
           onAdd: function () {
             var container = L.DomUtil.create('div', 'leaflet-bar reset-map-control');
             var btn = L.DomUtil.create('button', 'reset-map-btn', container);
@@ -1770,7 +1849,9 @@
 
             btn.onclick = function (e) {
               resetAllFiltersAndView();
-            };
+            }
+
+              ;
             return container;
           }
         });
@@ -1781,22 +1862,24 @@
           attribution: '&copy; OpenStreetMap contributors'
         });
 
-        var baseSat = L.tileLayer(
-          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        var baseSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           {
             maxZoom: 19,
-            attribution:
-              'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-          }
-        );
+            attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+          });
 
         baseLayers = {
           mapa: baseClaro,
           satellite: baseSat
-        };
+        }
+
+          ;
 
         baseLayer = baseClaro.addTo(map);
-        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        L.control.zoom({
+          position: 'bottomright'
+        }).addTo(map);
 
 
 
@@ -1853,46 +1936,56 @@
       }
 
       function loadGeoJSON() {
-        fetch('Prueba_2.geojson')
-          .then(function (response) {
-            if (!response.ok) {
-              throw new Error('No se pudo cargar Prueba_2.geojson');
-            }
-            return response.json();
-          })
-          .then(function (data) {
-            geojsonData = data;
-            computeIndicesFromData();
-            populateSelectorsFromData();
-            renderLots('all');
-            setupSelectors();
-          })
-          .catch(function (error) {
-            console.error(error);
-            var alertBox = document.getElementById('geojson-error');
-            if (alertBox) {
-              alertBox.textContent =
-                'No se pudo cargar el archivo de lotes. Verifica que "Prueba_2.geojson" esté en la misma carpeta que este archivo HTML o ajusta la ruta en el código.';
-              alertBox.style.display = 'block';
-            }
-          });
+        fetch('Prueba_2.geojson').then(function (response) {
+          if (!response.ok) {
+            throw new Error('No se pudo cargar Prueba_2.geojson');
+          }
+
+          return response.json();
+
+        }).then(function (data) {
+          geojsonData = data;
+          computeIndicesFromData();
+          populateSelectorsFromData();
+          renderLots('all');
+          setupSelectors();
+
+        }).catch(function (error) {
+          console.error(error);
+          var alertBox = document.getElementById('geojson-error');
+
+          if (alertBox) {
+            alertBox.textContent = 'No se pudo cargar el archivo de lotes. Verifica que "Prueba_2.geojson" esté en la misma carpeta que este archivo HTML o ajusta la ruta en el código.';
+            alertBox.style.display = 'block';
+          }
+        });
       }
 
       function computeIndicesFromData() {
-        devToSections = {};
-        allSectionsSet = {};
+        devToSections = {}
+
+          ;
+
+        allSectionsSet = {}
+
+          ;
 
         if (!geojsonData || !Array.isArray(geojsonData.features)) return;
 
         geojsonData.features.forEach(function (feature) {
-          var p = feature.properties || {};
+          var p = feature.properties || {}
+
+            ;
           // Nuevos nombres de columnas
           var d = p['Desarrollo'] || p['04-04Desar'] || 'Desconocido';
           var s = p['Secci__n'] || p['04-04Secci'] || 'Sin Sección';
 
           if (!devToSections[d]) {
-            devToSections[d] = {};
+            devToSections[d] = {}
+
+              ;
           }
+
           devToSections[d][s] = true;
           allSectionsSet[s] = true;
         });
@@ -1904,6 +1997,7 @@
         if (devSelect) {
           var devValues = Object.keys(devToSections).sort();
           devSelect.innerHTML = '<option value="all">Todos los desarrollos</option>';
+
           devValues.forEach(function (v) {
             var opt = document.createElement('option');
             opt.value = v;
@@ -1921,14 +2015,18 @@
         if (!secSelect) return;
 
         var sections = [];
+
         if (!devKey || devKey === 'all') {
           sections = Object.keys(allSectionsSet);
-        } else if (devToSections[devKey]) {
+        }
+
+        else if (devToSections[devKey]) {
           sections = Object.keys(devToSections[devKey]);
         }
 
         sections.sort();
         secSelect.innerHTML = '<option value="all">Todas las secciones</option>';
+
         sections.forEach(function (s) {
           var opt = document.createElement('option');
           opt.value = s;
@@ -1938,11 +2036,15 @@
       }
 
       function collectUsosForCurrentDevSec() {
-        var usosSet = {};
+        var usosSet = {}
+
+          ;
         if (!geojsonData || !Array.isArray(geojsonData.features)) return usosSet;
 
         geojsonData.features.forEach(function (feature) {
-          var p = feature.properties || {};
+          var p = feature.properties || {}
+
+            ;
           // Nuevos nombres de columnas
           var d = p['Desarrollo'] || p['04-04Desar'];
           var s = p['Secci__n'] || p['04-04Secci'];
@@ -1972,6 +2074,7 @@
         var usos = Object.keys(usosSet).sort();
 
         usoSelect.innerHTML = '<option value="all">Todos los usos</option>';
+
         usos.forEach(function (u) {
           var opt = document.createElement('option');
           opt.value = u;
@@ -1981,7 +2084,9 @@
 
         if (currentUsoSuelo !== 'all' && usos.indexOf(currentUsoSuelo) !== -1) {
           usoSelect.value = currentUsoSuelo;
-        } else {
+        }
+
+        else {
           currentUsoSuelo = 'all';
           usoSelect.value = 'all';
         }
@@ -2019,6 +2124,7 @@
         }
 
         var surfaceSelect = document.getElementById('surface-select');
+
         if (surfaceSelect) {
           surfaceSelect.addEventListener('change', function () {
             renderLots(currentFilter);
@@ -2030,37 +2136,53 @@
         if (!filterName || filterName === 'all') {
           return function () {
             return true;
-          };
+          }
+
+            ;
         }
 
         // Filtros por Vocación (Categorías de Uso de Suelo)
         if (filterName === 'habitacional') {
           return function (feature) {
-            var p = feature.properties || {};
+            var p = feature.properties || {}
+
+              ;
             var uso = getUsoFromProps(p).toLowerCase();
             return uso.includes('unifamiliar') || uso.includes('plurifamiliar') || uso.includes('residencial') || uso.includes('habitacional');
-          };
+          }
+
+            ;
         }
 
         if (filterName === 'comercial') {
           return function (feature) {
-            var p = feature.properties || {};
+            var p = feature.properties || {}
+
+              ;
             var uso = getUsoFromProps(p).toLowerCase();
             return uso.includes('comercial') || uso.includes('mixto') || uso.includes('equipamiento');
-          };
+          }
+
+            ;
         }
 
         if (filterName === 'turistico') {
           return function (feature) {
-            var p = feature.properties || {};
+            var p = feature.properties || {}
+
+              ;
             var uso = getUsoFromProps(p).toLowerCase();
             return uso.includes('hotelero') || uso.includes('turístico') || uso.includes('turistico');
-          };
+          }
+
+            ;
         }
 
         return function () {
           return true;
-        };
+        }
+
+          ;
       }
 
       function styleByFeature(feature) {
@@ -2071,7 +2193,9 @@
           fillColor: COLORS.lotRed,
           fillOpacity: 0.3,
           className: 'lot-polygon-path' // Clase base para transiciones
-        };
+        }
+
+          ;
       }
 
       function highlightFeature(event, layer) {
@@ -2106,7 +2230,9 @@
       }
 
       function makeLotItem(feature, layer) {
-        var props = feature.properties || {};
+        var props = feature.properties || {}
+
+          ;
         // Mapeo de nuevas columnas de Prueba_2.geojson
         var desar = props['Desarrollo'] || props['04-04Desar'] || '';
         var secci = props['Secci__n'] || props['04-04Secci'] || '';
@@ -2125,58 +2251,15 @@
         var loteName = loteId ? 'Lote ' + loteId : nombreAttr || 'Lote sin nombre';
 
         // Formatear superficie con comas
-        var supFormatted = sup ? parseFloat(sup).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+        var supFormatted = sup ? parseFloat(sup).toLocaleString('es-MX', {
+          minimumFractionDigits: 2, maximumFractionDigits: 2
+        }) : '—';
 
         // Formatear precio si existe
         var precioFormatted = precioSalida ? precioSalida : ''; // Asumimos que viene formateado o es texto, si es número se podría formatear
 
         // Construcción del HTML personalizado (Tarjeta Moderna)
-        var popupHtml =
-          '<div class="custom-popup-wrapper">' +
-          '<header class="custom-popup-header">' +
-          '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' +
-          '</header>' +
-
-          '<div class="custom-popup-caption">Ficha Técnica</div>' +
-
-          '<div class="popup-hero">' +
-          '<div class="popup-hero-title">Lote ' + escapeHtml(loteId) + '</div>' +
-          '<div class="popup-hero-subtitle">' +
-          '<div>Superficie: ' + escapeHtml(supFormatted) + ' m²</div>' +
-          (precioFormatted ? '<div>Precio de salida: ' + escapeHtml(precioFormatted) + '</div>' : '') +
-          '</div>' +
-          '</div>' +
-
-          '<div class="popup-grid">' +
-          '<div class="popup-item">' +
-          '<span class="popup-label">Desarrollo</span>' +
-          '<span class="popup-value">' + escapeHtml(desar) + '</span>' +
-          '</div>' +
-          '<div class="popup-item">' +
-          '<span class="popup-label">Sección</span>' +
-          '<span class="popup-value">' + escapeHtml(secci) + '</span>' +
-          '</div>' +
-          '<div class="popup-item">' +
-          '<span class="popup-label">Manzana</span>' +
-          '<span class="popup-value">' + escapeHtml(manza) + '</span>' +
-          '</div>' +
-          '<div class="popup-item">' +
-          '<span class="popup-label">Estatus</span>' +
-          '<span class="popup-value">' + escapeHtml(dispo) + '</span>' +
-          '</div>' +
-          '<div class="popup-item popup-full-width">' +
-          '<span class="popup-label">Uso de Suelo</span>' +
-          '<span class="popup-value">' + escapeHtml(uso) + '</span>' +
-          '</div>' +
-          (linkCatalogo ?
-            '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' +
-            '<span class="popup-label">Más información</span>' +
-            '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #ffffff; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' +
-            '</div>' : '') +
-          '</div>' +
-
-          '<div class="custom-popup-footer">Fondo Nacional de Fomento al Turismo</div>' +
-          '</div>';
+        var popupHtml = '<div class="custom-popup-wrapper">' + '<header class="custom-popup-header">' + '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' + '</header>' + '<div class="custom-popup-caption">Ficha Técnica</div>' + '<div class="popup-hero">' + '<div class="popup-hero-title">Lote ' + escapeHtml(loteId) + '</div>' + '<div class="popup-hero-subtitle">' + '<div>Superficie: ' + escapeHtml(supFormatted) + ' m²</div>' + (precioFormatted ? '<div>Precio de salida: ' + escapeHtml(precioFormatted) + '</div>' : '') + '</div>' + '</div>' + '<div class="popup-grid">' + '<div class="popup-item">' + '<span class="popup-label">Desarrollo</span>' + '<span class="popup-value">' + escapeHtml(desar) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Sección</span>' + '<span class="popup-value">' + escapeHtml(secci) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Manzana</span>' + '<span class="popup-value">' + escapeHtml(manza) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Estatus</span>' + '<span class="popup-value">' + escapeHtml(dispo) + '</span>' + '</div>' + '<div class="popup-item popup-full-width">' + '<span class="popup-label">Uso de Suelo</span>' + '<span class="popup-value">' + escapeHtml(uso) + '</span>' + '</div>' + (linkCatalogo ? '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' + '<span class="popup-label">Más información</span>' + '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #ffffff; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' + '</div>' : '') + '</div>' + '<div class="custom-popup-footer">Fondo Nacional de Fomento al Turismo</div>' + '</div>';
 
         layer.bindPopup(popupHtml, {
           autoPan: false // Desactivar autoPan para evitar conflicto con flyTo
@@ -2185,10 +2268,14 @@
         layer.on({
           mouseover: function (e) {
             highlightFeature(e, layer);
-          },
+          }
+
+          ,
           mouseout: function (e) {
             resetHighlight(e);
-          },
+          }
+
+          ,
           click: function () {
             // Prevent overlapping animations
             if (window.__popupAnimating) return;
@@ -2196,19 +2283,29 @@
 
             // Calcular el centro del polígono usando Turf
             var center;
+
             try {
               var centroid = turf.centroid(feature);
               center = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
-            } catch (e) {
+            }
+
+            catch (e) {
               // Fallback si Turf falla
               center = layer.getBounds().getCenter();
             }
 
             // Determinar padding según el tamaño de pantalla
             var isMobile = window.innerWidth <= 640;
-            var paddingOptions = isMobile
-              ? { paddingTopLeft: [20, 220] }
-              : { paddingTopLeft: [50, 350] };
+
+            var paddingOptions = isMobile ? {
+              paddingTopLeft: [20, 220]
+            }
+
+              : {
+                paddingTopLeft: [50, 350]
+              }
+
+              ;
 
             // Fly to con transición más suave
             map.flyTo(center, 17, {
@@ -2225,7 +2322,9 @@
             // Abrir popup tras un pequeño retraso
             setTimeout(function () {
               layer.openPopup();
-            }, 150);
+            }
+
+              , 150);
           }
         });
 
@@ -2233,7 +2332,9 @@
           layer: layer,
           feature: feature,
           props: props
-        };
+        }
+
+          ;
       }
 
       function renderLots(filterName) {
@@ -2251,10 +2352,14 @@
         var dispoFilter = getFilterFn(currentFilter);
 
         lotLayer = L.geoJSON(geojsonData, {
+
           style: styleByFeature,
           filter: function (feature) {
             if (!dispoFilter(feature)) return false;
-            var p = feature.properties || {};
+
+            var p = feature.properties || {}
+
+              ;
             // Nuevos nombres de columnas
             var d = p['Desarrollo'] || p['04-04Desar'];
             var s = p['Secci__n'] || p['04-04Secci'];
@@ -2269,6 +2374,7 @@
 
             if (currentUsoSuelo !== 'all') {
               var usoVal = getUsoFromProps(p);
+
               if (usoVal !== currentUsoSuelo) {
                 return false;
               }
@@ -2276,6 +2382,7 @@
 
             // Filtro por Superficie (Dropdown)
             var surfaceSelect = document.getElementById('surface-select');
+
             if (surfaceSelect && surfaceSelect.value !== 'all') {
               var range = surfaceSelect.value;
               var supStr = p['Superficie'] || p['04-04Super'];
@@ -2289,7 +2396,9 @@
             }
 
             return true;
-          },
+          }
+
+          ,
           onEachFeature: function (feature, layer) {
             var item = makeLotItem(feature, layer);
             lotItems.push(item);
@@ -2310,12 +2419,16 @@
 
         // Generar marcadores para clusters (centroides)
         var clusterMarkers = [];
+
         lotItems.forEach(function (item) {
           var center;
+
           try {
             var centroid = turf.centroid(item.feature);
             center = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
-          } catch (e) {
+          }
+
+          catch (e) {
             center = item.layer.getBounds().getCenter();
           }
 
@@ -2331,7 +2444,9 @@
 
           // Al hacer clic en un marcador individual (cuando ya no agrupa), hacemos zoom al polígono
           marker.on('click', function () {
-            map.flyTo(center, 18, { duration: 1.5 });
+            map.flyTo(center, 18, {
+              duration: 1.5
+            });
             // El polígono se mostrará al hacer zoom
           });
 
@@ -2344,10 +2459,15 @@
         if (lotItems.length > 0 && lotLayer) {
           try {
             var bounds = lotLayer.getBounds();
+
             if (bounds.isValid()) {
-              map.fitBounds(bounds, { padding: [50, 50] });
+              map.fitBounds(bounds, {
+                padding: [50, 50]
+              });
             }
-          } catch (e) {
+          }
+
+          catch (e) {
             console.warn('No se pudo ajustar el zoom:', e);
           }
         }
@@ -2366,23 +2486,29 @@
 
           // 1. Animación de Dibujado (Draw-in)
           anime({
+
             targets: paths,
             strokeDashoffset: [anime.setDashoffset, 0],
             strokeOpacity: {
               value: [0, 1],
               duration: 100,
               easing: 'linear'
-            },
+            }
+
+            ,
             fillOpacity: {
               value: [0, 0.3], // Opacidad final del relleno
               duration: 600,
               delay: 300,
               easing: 'easeOutQuad'
-            },
+            }
+
+            ,
             duration: 1200,
             delay: anime.stagger(5),
             easing: 'easeOutCubic',
             complete: function () {
+
               // 2. Efecto de "Respiración Dorada" en bucle infinito
               anime({
                 targets: paths,
@@ -2395,7 +2521,9 @@
               });
             }
           });
-        }, 100);
+        }
+
+          , 100);
       }
 
       function updateLayerVisibility() {
@@ -2407,7 +2535,9 @@
         if (z < zoomThreshold) {
           if (map.hasLayer(lotLayer)) map.removeLayer(lotLayer);
           if (!map.hasLayer(markersClusterGroup) && markersClusterGroup) map.addLayer(markersClusterGroup);
-        } else {
+        }
+
+        else {
           // Si el zoom es alto (cerca), mostramos polígonos y ocultamos clusters
           if (map.hasLayer(markersClusterGroup)) map.removeLayer(markersClusterGroup);
 
@@ -2422,20 +2552,27 @@
       function updateStatsFromItems(items) {
         var totalLots = items.length;
         var totalArea = 0;
-        var developmentsSet = {};
+
+        var developmentsSet = {}
+
+          ;
 
         items.forEach(function (item) {
-          var p = item.props || {};
+          var p = item.props || {}
+
+            ;
 
           // Calcular superficie
           var supStr = p['Superficie'] || p['04-04Super'];
           var area = parseSurface(supStr);
+
           if (!isNaN(area)) {
             totalArea += area;
           }
 
           // Contar desarrollos únicos
           var desar = p['Desarrollo'] || p['04-04Desar'];
+
           if (desar) {
             developmentsSet[desar] = true;
           }
@@ -2455,18 +2592,17 @@
         // Actualizar valores
         if (heroTotalEl) heroTotalEl.textContent = totalLots.toLocaleString('es-MX');
 
-        var areaFormatted = totalLots > 0 ? totalArea.toLocaleString('es-MX', { maximumFractionDigits: 0 }) + ' m²' : '—';
+        var areaFormatted = totalLots > 0 ? totalArea.toLocaleString('es-MX', {
+          maximumFractionDigits: 0
+        }) + ' m²' : '—';
 
         if (heroAreaEl) heroAreaEl.textContent = areaFormatted;
         if (statTotalAreaEl) statTotalAreaEl.textContent = areaFormatted;
 
         if (statDevsEl) statDevsEl.textContent = uniqueDevelopments.toLocaleString('es-MX');
 
-        if (listCountEl)
-          listCountEl.textContent =
-            totalLots > 0
-              ? totalLots.toLocaleString('es-MX') + ' lotes en el filtro actual'
-              : 'Sin lotes para el filtro actual';
+        if (listCountEl) listCountEl.textContent = totalLots > 0 ? totalLots.toLocaleString('es-MX') + ' lotes en el filtro actual'
+          : 'Sin lotes para el filtro actual';
       }
 
       function buildLotList(items) {
@@ -2483,7 +2619,9 @@
         var maxItems = 80;
 
         items.slice(0, maxItems).forEach(function (item) {
-          var props = item.props || {};
+          var props = item.props || {}
+
+            ;
           // Nuevos nombres de columnas
           var loteId = props['Lote'] || props['04-04Lote'] || '';
           var manza = props['Manzana'] || props['04-04Manza'] || '';
@@ -2500,34 +2638,21 @@
 
           var dispoLabel = dispo || 'Sin estatus';
 
-          card.innerHTML =
-            '<div class="lot-card-header">' +
-            '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' +
-            '</div>' +
-            '<div>' +
-            '<h4 class="lot-name">' +
-            escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') +
-            '</h4>' +
-            '<p class="lot-location">' +
-            escapeHtml(secci || '') +
-            (desar ? ' · ' + escapeHtml(desar) : '') +
-            '</p>' +
-            '</div>' +
-            '<div class="lot-card-meta">' +
-            (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') +
-            (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') +
-            (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') +
-            '</div>';
+          card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
 
           card.addEventListener('click', function () {
             var layer = item.layer;
+
             if (layer) {
               // OPCIÓN 3: FlyTo suave desde la lista también
               var center;
+
               try {
                 var centroid = turf.centroid(item.feature);
                 center = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
-              } catch (e) {
+              }
+
+              catch (e) {
                 center = layer.getBounds().getCenter();
               }
 
@@ -2571,6 +2696,7 @@
         chips.forEach(function (chip) {
           chip.addEventListener('click', function () {
             var filter = chip.getAttribute('data-filter');
+
             chips.forEach(function (c) {
               c.classList.remove('is-active');
             });
@@ -2586,26 +2712,25 @@
 
         input.addEventListener('input', function () {
           var term = input.value.toLowerCase().trim();
+
           if (!term) {
             buildLotList(lotItems);
             return;
           }
 
           var filtered = lotItems.filter(function (item) {
-            var p = item.props || {};
-            var text = [
-              p['04-04Lote'],
-              p['04-04Manza'],
-              p['04-04Secci'],
-              p['04-04Desar'],
-              p['04-04Descr'],
-              p['Uso_suelo'],
-              p['uso_suelo'],
-              p['04-04Dispo'],
-              p.Nombre
-            ]
-              .join(' ')
-              .toLowerCase();
+            var p = item.props || {}
+
+              ;
+            var text = [p['04-04Lote'],
+            p['04-04Manza'],
+            p['04-04Secci'],
+            p['04-04Desar'],
+            p['04-04Descr'],
+            p['Uso_suelo'],
+            p['uso_suelo'],
+            p['04-04Dispo'],
+            p.Nombre].join(' ').toLowerCase();
             return text.indexOf(term) !== -1;
           });
 
@@ -2620,8 +2745,11 @@
         btn.addEventListener('click', function () {
           resetAllFiltersAndView();
           var hero = document.querySelector('.hero');
+
           if (hero && hero.scrollIntoView) {
-            hero.scrollIntoView({ behavior: 'smooth' });
+            hero.scrollIntoView({
+              behavior: 'smooth'
+            });
           }
         });
       }
@@ -2633,8 +2761,10 @@
         currentUsoSuelo = 'all';
 
         var chips = document.querySelectorAll('.filter-chip');
+
         chips.forEach(function (c) {
           c.classList.remove('is-active');
+
           if (c.getAttribute('data-filter') === 'all') {
             c.classList.add('is-active');
           }
@@ -2683,9 +2813,11 @@
         if (toggleBtn) {
           toggleBtn.addEventListener('click', openPanel);
         }
+
         if (closeBtn) {
           closeBtn.addEventListener('click', closePanel);
         }
+
         if (backdrop) {
           backdrop.addEventListener('click', closePanel);
         }
@@ -2696,6 +2828,7 @@
       // Detectar parámetro ?mode=embed
       function checkEmbedMode() {
         var params = new URLSearchParams(window.location.search);
+
         if (params.get('mode') === 'embed') {
           document.body.classList.add('embed-mode');
         }
@@ -2740,24 +2873,85 @@
         });
 
         anime({
+
           targets: '.hero-actions .btn',
           translateY: [15, 0],
           opacity: [0, 1],
-          delay: anime.stagger(80, { start: 520 }),
+          delay: anime.stagger(80, {
+            start: 520
+          }),
           duration: 550,
           easing: 'easeOutQuad'
         });
 
         anime({
+
           targets: '.stat-card',
           translateY: [12, 0],
           opacity: [0, 1],
-          delay: anime.stagger(80, { start: 700 }),
+          delay: anime.stagger(80, {
+            start: 700
+          }),
           duration: 550,
           easing: 'easeOutQuad'
         });
       }
     })();
+
+    // Driver.js Tour Implementation
+    window.startTour = function () {
+      const driver = window.driver.js.driver;
+
+      const driverObj = driver({
+
+        showProgress: true,
+        animate: true,
+        allowClose: true,
+        popoverClass: 'driverjs-theme',
+        nextBtnText: 'Siguiente',
+        prevBtnText: 'Anterior',
+        doneBtnText: 'Finalizar',
+        steps: [{
+          element: '.hero-section', popover: {
+            title: 'Bienvenido al Geoportal', description: 'Descubre los lotes disponibles para venta directa en este mapa interactivo.'
+          }
+        }
+
+          ,
+        {
+          element: '.selector-row', popover: {
+            title: 'Filtra tu Búsqueda', description: 'Utiliza estos filtros para encontrar lotes por Desarrollo, Uso de Suelo o Superficie.'
+          }
+        }
+
+          ,
+        {
+          element: '#map', popover: {
+            title: 'Mapa Interactivo', description: 'Navega por el mapa, haz zoom y haz clic en los polígonos para ver la ficha técnica de cada lote.'
+          }
+        }
+
+          ,
+        {
+          element: '.lot-list-container', popover: {
+            title: 'Listado de Lotes', description: 'Aquí encontrarás el detalle de los lotes que coinciden con tu búsqueda.'
+          }
+        }
+
+          ,
+        {
+          element: '.reset-map-btn', popover: {
+            title: 'Restablecer Vista', description: 'Si necesitas volver a la vista inicial, utiliza este botón.'
+          }
+        }
+
+        ]
+      });
+
+      driverObj.drive();
+    }
+
+      ;
   </script>
 </body>
 
