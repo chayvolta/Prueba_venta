@@ -1011,15 +1011,17 @@
 
     .custom-popup-header {
       background: #ffffff;
-      padding: 8px 12px;
+      padding: 6px 12px;
+      border-bottom: none;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .custom-popup-header img {
-      height: 24px;
+      height: 20px;
       width: auto;
+      display: block;
     }
 
     .custom-popup-caption {
@@ -1034,21 +1036,26 @@
     }
 
     .popup-hero {
-      padding: 12px;
+      background: transparent;
+      color: #ffffff;
+      padding: 8px 12px;
       text-align: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .popup-hero-title {
-      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      margin-bottom: 3px;
+      font-size: 1rem;
       color: #ffffff;
+      margin-bottom: 2px;
+      line-height: 1.1;
     }
 
     .popup-hero-subtitle {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--fonatur-sand);
+      opacity: 0.9;
       font-weight: 500;
     }
 
@@ -1084,31 +1091,35 @@
     .popup-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 12px;
-      font-size: 0.7rem;
+      gap: 6px;
+      padding: 8px 12px;
+      background: transparent;
+      font-size: 0.65rem;
     }
 
     .popup-item {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+    }
+
+    .popup-item.popup-full-width {
+      grid-column: 1 / -1;
     }
 
     .popup-label {
-      color: var(--fonatur-gold);
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+      color: var(--fonatur-gold);
+      margin-bottom: 0;
       font-weight: 600;
-      opacity: 0.9;
     }
 
     .popup-value {
       font-weight: 600;
       color: #ffffff;
-      line-height: 1.2;
-      font-size: 0.7rem;
+      line-height: 1.1;
+      font-size: 0.65rem;
     }
 
     .popup-full-width {
@@ -2158,9 +2169,9 @@
           '<span class="popup-value">' + escapeHtml(uso) + '</span>' +
           '</div>' +
           (linkCatalogo ?
-            '<div class="popup-item popup-full-width">' +
+            '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' +
             '<span class="popup-label">Más información</span>' +
-            '<span class="popup-value"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #cdab72; text-decoration: underline;">Ir al Catálogo</a></span>' +
+            '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #cdab72; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' +
             '</div>' : '') +
           '</div>' +
 
@@ -2190,10 +2201,11 @@
             }
 
             // Determinar padding según el tamaño de pantalla
+            // AUMENTADO: Se incrementó el padding superior para compensar la altura extra del popup
             var isMobile = window.innerWidth <= 640;
             var paddingOptions = isMobile
-              ? { paddingTopLeft: [20, 100] } // Móvil: más espacio arriba para el popup
-              : { paddingTopLeft: [50, 200] }; // Web: espacio suficiente para popup completo
+              ? { paddingTopLeft: [20, 220] } // Móvil: aumentado de 180 a 220
+              : { paddingTopLeft: [50, 350] }; // Web: aumentado de 280 a 350
 
             // Hacer flyTo con padding y abrir popup inmediatamente después
             map.flyTo(center, 17, {
