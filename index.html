@@ -1716,7 +1716,15 @@
     }
 
     .driver-popover.driverjs-theme .driver-popover-close-btn {
-      color: #cdab72;
+      color: #ffffff;
+      background-color: #cdab72;
+      border-radius: 4px;
+      padding: 0 4px;
+      transition: background-color 0.2s;
+    }
+
+    .driver-popover.driverjs-theme .driver-popover-close-btn:hover {
+      background-color: #b5925a;
     }
 
     .driver-popover.driverjs-theme .driver-popover-arrow-side-left.driver-popover-arrow {
@@ -2933,7 +2941,7 @@
 
           ,
         {
-          element: '.lot-list-container', popover: {
+          element: '.lot-list-title', popover: {
             title: 'Listado de Lotes', description: 'Aquí encontrarás el detalle de los lotes que coinciden con tu búsqueda.'
           }
         }
