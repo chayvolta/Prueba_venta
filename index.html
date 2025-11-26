@@ -1650,7 +1650,8 @@
     <img src="footer-institucional.png" alt="Gobierno de México - Secretaría de Turismo - FONATUR" class="footer-image">
     <span>
       Este sitio contiene información ilustrativa, para cualquier
-      <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur.
+      <strong>duda o aclaración</strong> contactar a la Dirección de Comercialización del Fonatur en
+      <strong>informacionventas@fonatur.gob.mx</strong>.
     </span>
   </footer>
 
@@ -2383,16 +2384,16 @@
               return false;
             }
 
-              if (currentUsoSuelo !== 'all' && normalized.uso !== currentUsoSuelo) {
-                return false;
-              }
+            if (currentUsoSuelo !== 'all' && normalized.uso !== currentUsoSuelo) {
+              return false;
+            }
 
             // Filtro por Superficie (Dropdown)
             var surfaceSelect = document.getElementById('surface-select');
 
-              if (surfaceSelect && surfaceSelect.value !== 'all') {
-                var range = surfaceSelect.value;
-                var area = parseSurface(normalized.superficie);
+            if (surfaceSelect && surfaceSelect.value !== 'all') {
+              var range = surfaceSelect.value;
+              var area = parseSurface(normalized.superficie);
 
               if (isNaN(area)) return false;
 
@@ -2563,25 +2564,25 @@
 
           ;
 
-          items.forEach(function (item) {
-            var p = item.props || {}
+        items.forEach(function (item) {
+          var p = item.props || {}
 
-              ;
+            ;
 
-            // Calcular superficie
-            var area = parseSurface(p.superficie);
+          // Calcular superficie
+          var area = parseSurface(p.superficie);
 
-            if (!isNaN(area)) {
-              totalArea += area;
-            }
+          if (!isNaN(area)) {
+            totalArea += area;
+          }
 
-            // Contar desarrollos únicos
-            var desar = p.desarrollo;
+          // Contar desarrollos únicos
+          var desar = p.desarrollo;
 
-            if (desar) {
-              developmentsSet[desar] = true;
-            }
-          });
+          if (desar) {
+            developmentsSet[desar] = true;
+          }
+        });
 
         var uniqueDevelopments = Object.keys(developmentsSet).length;
 
@@ -2621,21 +2622,21 @@
           return;
         }
 
-          var maxItems = 80;
+        var maxItems = 80;
 
-          items.slice(0, maxItems).forEach(function (item) {
-            var props = item.props || {}
+        items.slice(0, maxItems).forEach(function (item) {
+          var props = item.props || {}
 
-              ;
-            // Propiedades normalizadas
-            var loteId = props.lote || '';
-            var manza = props.manzana || '';
-            var secci = props.seccion || '';
-            var desar = props.desarrollo || '';
-            var dispo = props.estatus || 'Disponible';
-            var sup = props.superficie || '';
-            var precio = props.precio || '';
-            var uso = props.uso;
+            ;
+          // Propiedades normalizadas
+          var loteId = props.lote || '';
+          var manza = props.manzana || '';
+          var secci = props.seccion || '';
+          var desar = props.desarrollo || '';
+          var dispo = props.estatus || 'Disponible';
+          var sup = props.superficie || '';
+          var precio = props.precio || '';
+          var uso = props.uso;
 
           var card = document.createElement('button');
           card.type = 'button';
@@ -2643,7 +2644,7 @@
 
           var dispoLabel = dispo || 'Sin estatus';
 
-            card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
+          card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
 
           card.addEventListener('click', function () {
             var layer = item.layer;
@@ -2723,19 +2724,19 @@
             return;
           }
 
-            var filtered = lotItems.filter(function (item) {
-              var p = item.props || {}
+          var filtered = lotItems.filter(function (item) {
+            var p = item.props || {}
 
-                ;
-              var text = [p.lote,
-              p.manzana,
-              p.seccion,
-              p.desarrollo,
-              p.uso,
-              p.estatus,
-              p.nombre].join(' ').toLowerCase();
-              return text.indexOf(term) !== -1;
-            });
+              ;
+            var text = [p.lote,
+            p.manzana,
+            p.seccion,
+            p.desarrollo,
+            p.uso,
+            p.estatus,
+            p.nombre].join(' ').toLowerCase();
+            return text.indexOf(term) !== -1;
+          });
 
           buildLotList(filtered);
         });
