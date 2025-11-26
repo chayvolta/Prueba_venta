@@ -1520,11 +1520,19 @@
               <div class="hero-legend">
                 <div class="legend-item">
                   <div class="legend-swatch legend-swatch--available"></div>
-                  <span>Disponible</span>
+                  <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span>Disponible</span>
+                    <span id="count-available"
+                      style="font-weight:700; font-size:0.85rem; color:var(--fonatur-green);">0</span>
+                  </div>
                 </div>
                 <div class="legend-item">
                   <div class="legend-swatch legend-swatch--reserved"></div>
-                  <span>En Proceso</span>
+                  <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span>Venta en proceso</span>
+                    <span id="count-process"
+                      style="font-weight:700; font-size:0.85rem; color:var(--fonatur-gold);">0</span>
+                  </div>
                 </div>
                 <!--
                 <div class="legend-item">
@@ -2580,6 +2588,8 @@
         var statDevsEl = document.getElementById('stat-developments');
 
         var listCountEl = document.getElementById('lot-list-count');
+        var countAvailableEl = document.getElementById('count-available');
+        var countProcessEl = document.getElementById('count-process');
 
         // Actualizar valores
         if (heroTotalEl) heroTotalEl.textContent = totalLots.toLocaleString('es-MX');
@@ -2595,6 +2605,11 @@
 
         if (listCountEl) listCountEl.textContent = totalLots > 0 ? totalLots.toLocaleString('es-MX') + ' lotes en el filtro actual'
           : 'Sin lotes para el filtro actual';
+
+        // Actualizar conteos de Estado del Portafolio
+        // Por ahora: Disponible = Total, En Proceso = 0 (según solicitud)
+        if (countAvailableEl) countAvailableEl.textContent = totalLots.toLocaleString('es-MX');
+        if (countProcessEl) countProcessEl.textContent = '0';
       }
 
       function buildLotList(items) {
