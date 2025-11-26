@@ -2748,7 +2748,7 @@
         currentFilter = 'all';
         currentDesarrollo = 'all';
         currentSeccion = 'all';
-        currentUsoSuelo = 'all';
+        currentPriceRange = 'all';
 
         var chips = document.querySelectorAll('.filter-chip');
 
@@ -2762,15 +2762,15 @@
 
         var devSelect = document.getElementById('dev-select');
         var secSelect = document.getElementById('sec-select');
-        var usoSelect = document.getElementById('uso-select');
+        var priceSelect = document.getElementById('price-select');
         var surfaceSelect = document.getElementById('surface-select'); // Nuevo
         var searchInput = document.getElementById('search-input');
 
         if (devSelect) devSelect.value = 'all';
         populateSectionOptions('all');
         if (secSelect) secSelect.value = 'all';
-        populateUsoOptions();
-        if (usoSelect) usoSelect.value = 'all';
+        // populateUsoOptions(); // Removed
+        if (priceSelect) priceSelect.value = 'all';
         if (surfaceSelect) surfaceSelect.value = 'all'; // Resetear superficie
         if (searchInput) searchInput.value = '';
 
