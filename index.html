@@ -1551,21 +1551,9 @@
             <div class="filters-right">
               <div class="selector-row">
                 <div class="selector-group">
-                  <label class="selector-label" for="dev-select">Desarrollo</label>
+                  <label class="selector-label" for="dev-select">Destino</label>
                   <select id="dev-select" class="selector-select">
-                    <option value="all">Todos los desarrollos</option>
-                  </select>
-                </div>
-                <div class="selector-group">
-                  <label class="selector-label" for="sec-select">Sección</label>
-                  <select id="sec-select" class="selector-select">
-                    <option value="all">Todas las secciones</option>
-                  </select>
-                </div>
-                <div class="selector-group">
-                  <label class="selector-label" for="uso-select">Uso de Suelo</label>
-                  <select id="uso-select" class="selector-select">
-                    <option value="all">Todos los usos</option>
+                    <option value="all">Todos los destinos</option>
                   </select>
                 </div>
                 <!-- NUEVO SELECTOR DE SUPERFICIE -->
@@ -1578,6 +1566,16 @@
                     <option value="range3">&gt; 1,000 m²</option>
                   </select>
                 </div>
+                <div class="selector-group">
+                  <label class="selector-label" for="price-select">Rango de Precios</label>
+                  <select id="price-select" class="selector-select">
+                    <option value="all">Cualquier precio</option>
+                    <option value="range1">$300k - $2.5M</option>
+                    <option value="range2">$2.5M - $5M</option>
+                    <option value="range3">$5M - $10M</option>
+                    <option value="range4">Más de $10M</option>
+                  </select>
+                </div>
                 <div class="selector-group" style="min-width: auto;">
                   <div style="color: #ffffff; font-weight: 600; font-size: 0.8rem; margin-left: 6px;">
                     Tipos de uso de suelo
@@ -1588,16 +1586,20 @@
                       Todos
                     </button>
                     <button class="filter-chip" data-filter="habitacional">
-                      <span class="filter-chip-dot" style="background:#34d399"></span>
+                      <span class="filter-chip-dot" style="background:#f8cd0f"></span>
                       Habitacional
                     </button>
                     <button class="filter-chip" data-filter="comercial">
-                      <span class="filter-chip-dot" style="background:#60a5fa"></span>
+                      <span class="filter-chip-dot" style="background:#33ebf1"></span>
                       Comercial / Mixto
                     </button>
                     <button class="filter-chip" data-filter="turistico">
-                      <span class="filter-chip-dot" style="background:#f472b6"></span>
+                      <span class="filter-chip-dot" style="background:#ee8945"></span>
                       Turístico / Hotelero
+                    </button>
+                    <button class="filter-chip" data-filter="industria">
+                      <span class="filter-chip-dot" style="background:#6502e6"></span>
+                      Industrial
                     </button>
                   </div>
                 </div>
@@ -1785,6 +1787,14 @@
         return isNaN(v) ? NaN : v;
       }
 
+      function parsePrice(str) {
+        if (!str) return NaN;
+        // Remove currency symbols, commas, spaces
+        var clean = str.toString().replace(/[$,\s]/g, '');
+        var v = parseFloat(clean);
+        return isNaN(v) ? NaN : v;
+      }
+
       function getUsoFromProps(p) {
         return ((p['Descripci___'] || p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '').toString().trim() || ''
         );
@@ -1827,7 +1837,8 @@
       var currentFilter = 'all';
       var currentDesarrollo = 'all';
       var currentSeccion = 'all';
-      var currentUsoSuelo = 'all';
+      // var currentUsoSuelo = 'all'; // Removed
+      var currentPriceRange = 'all';
 
       var devToSections = {}
 
@@ -2019,7 +2030,7 @@
 
         if (devSelect) {
           var devValues = Object.keys(devToSections).sort();
-          devSelect.innerHTML = '<option value="all">Todos los desarrollos</option>';
+          devSelect.innerHTML = '<option value="all">Todos los destinos</option>';
 
           devValues.forEach(function (v) {
             var opt = document.createElement('option');
@@ -2030,7 +2041,7 @@
         }
 
         populateSectionOptions('all');
-        populateUsoOptions();
+        // populateUsoOptions(); // Removed
       }
 
       function populateSectionOptions(devKey) {
@@ -2058,69 +2069,19 @@
         });
       }
 
-      function collectUsosForCurrentDevSec() {
-        var usosSet = {}
-
-          ;
-        var allUsosSet = {}
-
-          ;
-        if (!geojsonData || !Array.isArray(geojsonData.features)) return usosSet;
-
-        geojsonData.features.forEach(function (feature) {
-          var normalized = normalizeProps(feature.properties);
-          var uso = normalized.uso;
-
-          if (uso) {
-            allUsosSet[uso] = true;
-          }
-
-          if (currentDesarrollo !== 'all' && normalized.desarrollo !== currentDesarrollo) return;
-          if (currentSeccion !== 'all' && normalized.seccion !== currentSeccion) return;
-          if (uso) usosSet[uso] = true;
-        });
-
-        return Object.keys(usosSet).length === 0 ? allUsosSet : usosSet;
-      }
-
-      function populateUsoOptions() {
-        var usoSelect = document.getElementById('uso-select');
-        if (!usoSelect) return;
-
-        var usosSet = collectUsosForCurrentDevSec();
-        var usos = Object.keys(usosSet).sort();
-
-        usoSelect.innerHTML = '<option value="all">Todos los usos</option>';
-
-        usos.forEach(function (u) {
-          var opt = document.createElement('option');
-          opt.value = u;
-          opt.textContent = u;
-          usoSelect.appendChild(opt);
-        });
-
-        if (currentUsoSuelo !== 'all' && usos.indexOf(currentUsoSuelo) !== -1) {
-          usoSelect.value = currentUsoSuelo;
-        }
-
-        else {
-          currentUsoSuelo = 'all';
-          usoSelect.value = 'all';
-        }
-      }
+      /* populateUsoOptions removed */
 
       function setupSelectors() {
         var devSelect = document.getElementById('dev-select');
         var secSelect = document.getElementById('sec-select');
-        var usoSelect = document.getElementById('uso-select');
-
+        var priceSelect = document.getElementById('price-select');
         if (devSelect) {
           devSelect.addEventListener('change', function () {
             currentDesarrollo = devSelect.value || 'all';
             populateSectionOptions(currentDesarrollo);
             currentSeccion = 'all';
             if (secSelect) secSelect.value = 'all';
-            populateUsoOptions();
+            // populateUsoOptions(); // Removed
             renderLots(currentFilter);
           });
         }
@@ -2128,14 +2089,15 @@
         if (secSelect) {
           secSelect.addEventListener('change', function () {
             currentSeccion = secSelect.value || 'all';
-            populateUsoOptions();
+            // populateUsoOptions(); // Removed
             renderLots(currentFilter);
           });
         }
 
-        if (usoSelect) {
-          usoSelect.addEventListener('change', function () {
-            currentUsoSuelo = this.value;
+        var priceSelect = document.getElementById('price-select');
+        if (priceSelect) {
+          priceSelect.addEventListener('change', function () {
+            currentPriceRange = this.value;
             renderLots(currentFilter);
           });
         }
@@ -2193,6 +2155,14 @@
           }
 
             ;
+        }
+
+        if (filterName === 'industrial' || filterName === 'industria') {
+          return function (feature) {
+            var p = feature.properties || {};
+            var uso = getUsoFromProps(p).toLowerCase();
+            return uso.includes('industrial') || uso.includes('industria');
+          };
         }
 
         return function () {
@@ -2273,7 +2243,7 @@
         var precioFormatted = precioSalida ? precioSalida : ''; // Asumimos que viene formateado o es texto, si es número se podría formatear
 
         // Construcción del HTML personalizado (Tarjeta Moderna)
-        var popupHtml = '<div class="custom-popup-wrapper">' + '<header class="custom-popup-header">' + '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' + '</header>' + '<div class="custom-popup-caption">Ficha Técnica</div>' + '<div class="popup-hero">' + '<div class="popup-hero-title">Lote ' + escapeHtml(loteId) + '</div>' + '<div class="popup-hero-subtitle">' + '<div>Superficie: ' + escapeHtml(supFormatted) + ' m²</div>' + (precioFormatted ? '<div>Precio de salida: ' + escapeHtml(precioFormatted) + '</div>' : '') + '</div>' + '</div>' + '<div class="popup-grid">' + '<div class="popup-item">' + '<span class="popup-label">Desarrollo</span>' + '<span class="popup-value">' + escapeHtml(desar) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Sección</span>' + '<span class="popup-value">' + escapeHtml(secci) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Manzana</span>' + '<span class="popup-value">' + escapeHtml(manza) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Estatus</span>' + '<span class="popup-value">' + escapeHtml(dispo) + '</span>' + '</div>' + '<div class="popup-item popup-full-width">' + '<span class="popup-label">Uso de Suelo</span>' + '<span class="popup-value">' + escapeHtml(uso) + '</span>' + '</div>' + (linkCatalogo ? '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' + '<span class="popup-label">Más información</span>' + '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #ffffff; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' + '</div>' : '') + '</div>' + '<div class="custom-popup-footer">Fondo Nacional de Fomento al Turismo</div>' + '</div>';
+        var popupHtml = '<div class="custom-popup-wrapper">' + '<header class="custom-popup-header">' + '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' + '</header>' + '<div class="custom-popup-caption">Ficha Técnica</div>' + '<div class="popup-hero">' + '<div class="popup-hero-title">Lote ' + escapeHtml(loteId) + '</div>' + '<div class="popup-hero-subtitle">' + '<div>Superficie: ' + escapeHtml(supFormatted) + ' m²</div>' + (precioFormatted ? '<div>Precio de salida: ' + escapeHtml(precioFormatted) + '</div>' : '') + '</div>' + '</div>' + '<div class="popup-grid">' + '<div class="popup-item">' + '<span class="popup-label">Destino</span>' + '<span class="popup-value">' + escapeHtml(desar) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Sección</span>' + '<span class="popup-value">' + escapeHtml(secci) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Manzana</span>' + '<span class="popup-value">' + escapeHtml(manza) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Estatus</span>' + '<span class="popup-value">' + escapeHtml(dispo) + '</span>' + '</div>' + '<div class="popup-item popup-full-width">' + '<span class="popup-label">Uso de Suelo</span>' + '<span class="popup-value">' + escapeHtml(uso) + '</span>' + '</div>' + (linkCatalogo ? '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' + '<span class="popup-label">Más información</span>' + '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #ffffff; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' + '</div>' : '') + '</div>' + '<div class="custom-popup-footer">Fondo Nacional de Fomento al Turismo</div>' + '</div>';
 
         layer.bindPopup(popupHtml, {
           autoPan: false // Desactivar autoPan para evitar conflicto con flyTo
@@ -2384,8 +2354,24 @@
               return false;
             }
 
-            if (currentUsoSuelo !== 'all' && normalized.uso !== currentUsoSuelo) {
-              return false;
+            // Price Filter Logic
+            if (currentPriceRange !== 'all') {
+              var priceVal = parsePrice(normalized.precioSalida);
+              if (isNaN(priceVal)) return false; // If no price, exclude or include? Usually exclude if filtering by price.
+
+              if (currentPriceRange === 'range1') {
+                // 300k - 2.5M
+                if (priceVal < 300000 || priceVal > 2500000) return false;
+              } else if (currentPriceRange === 'range2') {
+                // 2.5M - 5M
+                if (priceVal <= 2500000 || priceVal > 5000000) return false;
+              } else if (currentPriceRange === 'range3') {
+                // 5M - 10M
+                if (priceVal <= 5000000 || priceVal > 10000000) return false;
+              } else if (currentPriceRange === 'range4') {
+                // > 10M
+                if (priceVal <= 10000000) return false;
+              }
             }
 
             // Filtro por Superficie (Dropdown)
@@ -2924,7 +2910,7 @@
           ,
         {
           element: '.selector-row', popover: {
-            title: 'Filtra tu Búsqueda', description: 'Utiliza estos filtros para encontrar lotes por Desarrollo, Uso de Suelo o Superficie.'
+            title: 'Filtra tu Búsqueda', description: 'Utiliza estos filtros para encontrar lotes por Destino, Uso de Suelo o Superficie.'
           }
         }
 
