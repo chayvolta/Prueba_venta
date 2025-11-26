@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
+  <!-- Actualización: cambios de normalización y optimización ya integrados en el código -->
   <title>Geoportal de Lotes para Venta Directa del Fondo Nacional de Fomento al Turismo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -1654,7 +1655,6 @@
   </footer>
 
   <!-- Leaflet JS -->
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
@@ -1788,11 +1788,27 @@
         );
       }
 
+      function normalizeProps(rawProps) {
+        var p = rawProps || {};
+
+        return {
+          desarrollo: p['Desarrollo'] || p['04-04Desar'] || 'Desconocido',
+          seccion: p['Secci__n'] || p['04-04Secci'] || 'Sin Sección',
+          manzana: p['Manzana'] || p['04-04Manza'] || '',
+          lote: p['Lote'] || p['04-04Lote'] || '',
+          estatus: p['Estatus'] || p['04-04Dispo'] || 'Disponible',
+          superficie: p['Superficie'] || p['04-04Super'] || '',
+          precio: p['Precio'] || p['04-04Preci'] || '',
+          precioSalida: p['Precio_Salida'] || p['Precio'] || p['04-04Preci'] || '',
+          uso: getUsoFromProps(p),
+          linkCatalogo: p['Link_Catalogo'] || '',
+          nombre: p.Nombre || ''
+        };
+      }
+
       var map;
 
-      var baseLayers = {}
-
-        ;
+      var baseLayers = {};
       var baseLayer = null;
       var currentBaseKey = 'mapa';
 
@@ -1809,15 +1825,9 @@
       var currentSeccion = 'all';
       var currentUsoSuelo = 'all';
 
-      var devToSections = {}
+      var devToSections = {};
 
-        ;
-
-      var allSectionsSet = {}
-
-        ;
-
-      document.addEventListener('DOMContentLoaded', initApp);
+      var allSectionsSet = {};
 
       document.addEventListener('DOMContentLoaded', initApp);
 
@@ -1981,12 +1991,9 @@
         if (!geojsonData || !Array.isArray(geojsonData.features)) return;
 
         geojsonData.features.forEach(function (feature) {
-          var p = feature.properties || {}
-
-            ;
-          // Nuevos nombres de columnas
-          var d = p['Desarrollo'] || p['04-04Desar'] || 'Desconocido';
-          var s = p['Secci__n'] || p['04-04Secci'] || 'Sin Sección';
+          var normalized = normalizeProps(feature.properties);
+          var d = normalized.desarrollo;
+          var s = normalized.seccion;
 
           if (!devToSections[d]) {
             devToSections[d] = {}
@@ -2047,31 +2054,25 @@
         var usosSet = {}
 
           ;
+        var allUsosSet = {}
+
+          ;
         if (!geojsonData || !Array.isArray(geojsonData.features)) return usosSet;
 
         geojsonData.features.forEach(function (feature) {
-          var p = feature.properties || {}
+          var normalized = normalizeProps(feature.properties);
+          var uso = normalized.uso;
 
-            ;
-          // Nuevos nombres de columnas
-          var d = p['Desarrollo'] || p['04-04Desar'];
-          var s = p['Secci__n'] || p['04-04Secci'];
+          if (uso) {
+            allUsosSet[uso] = true;
+          }
 
-          if (currentDesarrollo !== 'all' && d !== currentDesarrollo) return;
-          if (currentSeccion !== 'all' && s !== currentSeccion) return;
-          var uso = getUsoFromProps(p);
+          if (currentDesarrollo !== 'all' && normalized.desarrollo !== currentDesarrollo) return;
+          if (currentSeccion !== 'all' && normalized.seccion !== currentSeccion) return;
           if (uso) usosSet[uso] = true;
         });
 
-        // Si no hay usos para esa combinación, usa todos los usos del dataset
-        if (Object.keys(usosSet).length === 0) {
-          geojsonData.features.forEach(function (feature) {
-            var uso = getUsoFromProps(feature.properties || {});
-            if (uso) usosSet[uso] = true;
-          });
-        }
-
-        return usosSet;
+        return Object.keys(usosSet).length === 0 ? allUsosSet : usosSet;
       }
 
       function populateUsoOptions() {
@@ -2238,30 +2239,27 @@
       }
 
       function makeLotItem(feature, layer) {
-        var props = feature.properties || {}
+        var props = normalizeProps(feature.properties);
 
-          ;
-        // Mapeo de nuevas columnas de Prueba_2.geojson
-        var desar = props['Desarrollo'] || props['04-04Desar'] || '';
-        var secci = props['Secci__n'] || props['04-04Secci'] || '';
-        var manza = props['Manzana'] || props['04-04Manza'] || '';
-        var loteId = props['Lote'] || props['04-04Lote'] || '';
-        // Estatus por defecto Disponible si no existe columna
-        var dispo = props['Estatus'] || props['04-04Dispo'] || 'Disponible';
-        var uso = getUsoFromProps(props);
-        var sup = props['Superficie'] || props['04-04Super'] || '';
+        var desar = props.desarrollo;
+        var secci = props.seccion;
+        var manza = props.manzana;
+        var loteId = props.lote;
+        var dispo = props.estatus;
+        var uso = props.uso;
+        var sup = props.superficie;
 
-        // Nuevos campos solicitados
-        var precioSalida = props['Precio_Salida'] || props['Precio'] || props['04-04Preci'] || '';
-        var linkCatalogo = props['Link_Catalogo'] || ''; // Hipervínculo al catálogo
+        var precioSalida = props.precioSalida;
+        var linkCatalogo = props.linkCatalogo; // Hipervínculo al catálogo
 
-        var nombreAttr = props.Nombre || '';
+        var nombreAttr = props.nombre;
         var loteName = loteId ? 'Lote ' + loteId : nombreAttr || 'Lote sin nombre';
 
         // Formatear superficie con comas
-        var supFormatted = sup ? parseFloat(sup).toLocaleString('es-MX', {
+        var supValue = parseSurface(sup);
+        var supFormatted = isNaN(supValue) ? '—' : supValue.toLocaleString('es-MX', {
           minimumFractionDigits: 2, maximumFractionDigits: 2
-        }) : '—';
+        });
 
         // Formatear precio si existe
         var precioFormatted = precioSalida ? precioSalida : ''; // Asumimos que viene formateado o es texto, si es número se podría formatear
@@ -2339,7 +2337,8 @@
         return {
           layer: layer,
           feature: feature,
-          props: props
+          props: props,
+          rawProps: feature.properties || {}
         }
 
           ;
@@ -2365,12 +2364,9 @@
           filter: function (feature) {
             if (!dispoFilter(feature)) return false;
 
-            var p = feature.properties || {}
-
-              ;
-            // Nuevos nombres de columnas
-            var d = p['Desarrollo'] || p['04-04Desar'];
-            var s = p['Secci__n'] || p['04-04Secci'];
+            var normalized = normalizeProps(feature.properties);
+            var d = normalized.desarrollo;
+            var s = normalized.seccion;
 
             if (currentDesarrollo !== 'all' && d !== currentDesarrollo) {
               return false;
@@ -2380,21 +2376,16 @@
               return false;
             }
 
-            if (currentUsoSuelo !== 'all') {
-              var usoVal = getUsoFromProps(p);
-
-              if (usoVal !== currentUsoSuelo) {
+              if (currentUsoSuelo !== 'all' && normalized.uso !== currentUsoSuelo) {
                 return false;
               }
-            }
 
             // Filtro por Superficie (Dropdown)
             var surfaceSelect = document.getElementById('surface-select');
 
-            if (surfaceSelect && surfaceSelect.value !== 'all') {
-              var range = surfaceSelect.value;
-              var supStr = p['Superficie'] || p['04-04Super'];
-              var area = parseSurface(supStr);
+              if (surfaceSelect && surfaceSelect.value !== 'all') {
+                var range = surfaceSelect.value;
+                var area = parseSurface(normalized.superficie);
 
               if (isNaN(area)) return false;
 
@@ -2565,26 +2556,25 @@
 
           ;
 
-        items.forEach(function (item) {
-          var p = item.props || {}
+          items.forEach(function (item) {
+            var p = item.props || {}
 
-            ;
+              ;
 
-          // Calcular superficie
-          var supStr = p['Superficie'] || p['04-04Super'];
-          var area = parseSurface(supStr);
+            // Calcular superficie
+            var area = parseSurface(p.superficie);
 
-          if (!isNaN(area)) {
-            totalArea += area;
-          }
+            if (!isNaN(area)) {
+              totalArea += area;
+            }
 
-          // Contar desarrollos únicos
-          var desar = p['Desarrollo'] || p['04-04Desar'];
+            // Contar desarrollos únicos
+            var desar = p.desarrollo;
 
-          if (desar) {
-            developmentsSet[desar] = true;
-          }
-        });
+            if (desar) {
+              developmentsSet[desar] = true;
+            }
+          });
 
         var uniqueDevelopments = Object.keys(developmentsSet).length;
 
@@ -2624,21 +2614,21 @@
           return;
         }
 
-        var maxItems = 80;
+          var maxItems = 80;
 
-        items.slice(0, maxItems).forEach(function (item) {
-          var props = item.props || {}
+          items.slice(0, maxItems).forEach(function (item) {
+            var props = item.props || {}
 
-            ;
-          // Nuevos nombres de columnas
-          var loteId = props['Lote'] || props['04-04Lote'] || '';
-          var manza = props['Manzana'] || props['04-04Manza'] || '';
-          var secci = props['Secci__n'] || props['04-04Secci'] || '';
-          var desar = props['Desarrollo'] || props['04-04Desar'] || '';
-          var dispo = props['Estatus'] || props['04-04Dispo'] || 'Disponible';
-          var sup = props['Superficie'] || props['04-04Super'] || '';
-          var precio = props['Precio'] || props['04-04Preci'] || '';
-          var uso = getUsoFromProps(props);
+              ;
+            // Propiedades normalizadas
+            var loteId = props.lote || '';
+            var manza = props.manzana || '';
+            var secci = props.seccion || '';
+            var desar = props.desarrollo || '';
+            var dispo = props.estatus || 'Disponible';
+            var sup = props.superficie || '';
+            var precio = props.precio || '';
+            var uso = props.uso;
 
           var card = document.createElement('button');
           card.type = 'button';
@@ -2646,7 +2636,7 @@
 
           var dispoLabel = dispo || 'Sin estatus';
 
-          card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
+            card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
 
           card.addEventListener('click', function () {
             var layer = item.layer;
@@ -2726,21 +2716,19 @@
             return;
           }
 
-          var filtered = lotItems.filter(function (item) {
-            var p = item.props || {}
+            var filtered = lotItems.filter(function (item) {
+              var p = item.props || {}
 
-              ;
-            var text = [p['04-04Lote'],
-            p['04-04Manza'],
-            p['04-04Secci'],
-            p['04-04Desar'],
-            p['04-04Descr'],
-            p['Uso_suelo'],
-            p['uso_suelo'],
-            p['04-04Dispo'],
-            p.Nombre].join(' ').toLowerCase();
-            return text.indexOf(term) !== -1;
-          });
+                ;
+              var text = [p.lote,
+              p.manzana,
+              p.seccion,
+              p.desarrollo,
+              p.uso,
+              p.estatus,
+              p.nombre].join(' ').toLowerCase();
+              return text.indexOf(term) !== -1;
+            });
 
           buildLotList(filtered);
         });
