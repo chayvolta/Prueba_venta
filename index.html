@@ -168,10 +168,8 @@
     .hero-inner {
       width: 50%;
       margin: 0 auto !important;
-      /* Centrado horizontalmente forzado */
       border-radius: var(--radius-xl);
       padding: 5rem !important;
-      /* Padding forzado a 5rem para balance */
       background: #022f2a;
       color: #ffffff;
       box-shadow: var(--shadow-soft);
@@ -204,7 +202,6 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      /* Alineado a la izquierda en el stack */
       width: 100%;
     }
 
@@ -334,7 +331,6 @@
       position: absolute;
       top: 0;
       right: 0;
-      /* Posicionamiento absoluto sobre el segundo legend-item */
     }
 
     .hero-legend {
@@ -420,10 +416,8 @@
     /* DASHBOARD */
     .dashboard {
       max-width: 90%;
-      /* Más ancho como se solicitó */
       margin: 0 auto 1rem;
       padding: 0.3rem 0;
-      /* Quitamos padding lateral para alinear con el mapa */
     }
 
     .dashboard-header {
@@ -501,11 +495,9 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: flex-start;
-      /* Alineación a la izquierda */
       gap: 1rem;
       margin-bottom: 1rem;
       max-width: 100%;
-      /* Asegurar que no exceda el ancho */
     }
 
     .filter-chips {
@@ -516,7 +508,6 @@
 
     .filter-chip {
       font-family: 'Noto Sans', sans-serif;
-      /* Asegurar fuente Noto Sans */
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.8);
       background: rgba(255, 255, 255, 0.9);
@@ -753,17 +744,16 @@
       color: #f9fafb;
     }
 
-    /* MEJORA VISUAL 1: Transiciones suaves en SVG */
+
     path.leaflet-interactive {
       transition: stroke-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         fill-opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         stroke 0.3s ease,
         fill 0.3s ease;
       transform-origin: center center;
-      /* Para efectos de escala si se usan */
     }
 
-    /* MEJORA VISUAL 2: Efecto Glow */
+
     .glow-effect {
       filter: drop-shadow(0 0 10px rgba(246, 184, 25, 0.7));
       stroke: #f6b819 !important;
@@ -1068,7 +1058,7 @@
       grid-template-columns: 1.2fr 0.8fr;
     }
 
-    /* MEJORA BOTÓN CERRAR POPUP */
+
     .leaflet-popup-close-button {
       width: 24px !important;
       height: 24px !important;
@@ -1136,14 +1126,14 @@
       letter-spacing: 0.02em;
     }
 
-    /* Ajustes para Leaflet Popup */
+
     .leaflet-popup-content-wrapper {
       padding: 0;
       overflow: hidden;
       background: transparent;
-      /* Dejar que nuestro wrapper controle el fondo */
+
       box-shadow: none;
-      /* Sombra personalizada si se desea */
+
     }
 
     .leaflet-popup-content {
@@ -1290,10 +1280,10 @@
         align-items: flex-start;
       }
 
-      /* MEDIA QUERY ESPECÍFICA PARA POPUPS EN MÓVIL (MOVIDO AL FINAL PARA SOBRESCRIBIR) */
+
       @media (max-width: 640px) {
 
-        /* Sobrescribir estilos base de Leaflet para quitar padding por defecto */
+
         .leaflet-popup-content-wrapper {
           padding: 0 !important;
           border-radius: 8px !important;
@@ -1311,7 +1301,7 @@
           padding: 0 !important;
         }
 
-        /* Estilos compactos para el wrapper personalizado */
+
         .custom-popup-wrapper {
           min-width: 140px !important;
           max-width: 160px !important;
@@ -1376,7 +1366,6 @@
           letter-spacing: 0;
         }
 
-        /* Ajustar botón cerrar */
         .leaflet-popup-close-button {
           width: 18px !important;
           height: 18px !important;
@@ -1426,12 +1415,12 @@
 
     body.embed-mode .page-shell {
       min-height: 0;
-      /* Evitar altura forzada */
+
     }
 
     body.embed-mode .hero {
       padding-top: 1rem;
-      /* Reducir padding superior */
+
     }
   </style>
 </head>
@@ -1472,7 +1461,6 @@
               <strong>Información oficial y actualizada.</strong>
             </div>
 
-            <!-- NUEVOS BADGES DE CONFIANZA -->
             <div class="hero-features">
               <div class="hero-feature-item">
                 <span>⚖️</span> <span>Certeza Jurídica</span>
@@ -1488,7 +1476,6 @@
               </div>
             </div>
 
-            <!-- INDICADORES CLAVE MOVIDOS AQUÍ -->
             <div class="hero-metric-row">
               <div>
                 <div class="hero-metric-value" id="hero-total">0</div>
@@ -1836,8 +1823,8 @@
 
       // Clustering
       var markersClusterGroup = null;
-      var zoomThreshold = 14; // Zoom nivel donde cambiamos de clusters a polígonos
-      var isFlying = false; // Flag para evitar parpadeo durante flyTo
+      var zoomThreshold = 14;
+      var isFlying = false;
 
       var lotLayer = null;
       var geojsonData = null;
@@ -1845,7 +1832,6 @@
       var currentFilter = 'all';
       var currentDesarrollo = 'all';
       var currentSeccion = 'all';
-      // var currentUsoSuelo = 'all'; // Removed
       var currentPriceRange = 'all';
 
       var devToSections = {}
@@ -1859,7 +1845,7 @@
       document.addEventListener('DOMContentLoaded', initApp);
 
       function initApp() {
-        checkEmbedMode(); // Revisar si estamos en modo embebido
+        checkEmbedMode();
         initMap();
         setupBaseSwitcher();
         setupFilters();
@@ -1931,20 +1917,10 @@
         // Vista general México
         map.setView([23.6345, -102.5528], 5);
 
-        // Evento de zoom para controlar visibilidad (opcional, markercluster lo hace solo, 
-        // pero aquí queremos ocultar polígonos y mostrar clusters o viceversa si queremos control manual)
-        // En este caso usaremos la estrategia: 
-        // - MarkerClusterGroup contiene marcadores (centroides)
-        // - GeoJSON Layer contiene polígonos
-        // - Mostramos uno u otro según zoom
-
-        // Evento de zoom para controlar visibilidad
-        // Usamos moveend para asegurar que la animación terminó antes de cambiar capas
         map.on('zoomend', function () {
           if (!isFlying) updateLayerVisibility();
         });
 
-        // Detectar inicio y fin de movimientos (incluyendo flyTo)
         map.on('movestart', function () {
           isFlying = true;
         });
@@ -2049,7 +2025,7 @@
         }
 
         populateSectionOptions('all');
-        // populateUsoOptions(); // Removed
+
       }
 
       function populateSectionOptions(devKey) {
@@ -2077,7 +2053,7 @@
         });
       }
 
-      /* populateUsoOptions removed */
+
 
       function setupSelectors() {
         var devSelect = document.getElementById('dev-select');
@@ -2089,7 +2065,6 @@
             populateSectionOptions(currentDesarrollo);
             currentSeccion = 'all';
             if (secSelect) secSelect.value = 'all';
-            // populateUsoOptions(); // Removed
             renderLots(currentFilter);
           });
         }
@@ -2097,7 +2072,6 @@
         if (secSelect) {
           secSelect.addEventListener('change', function () {
             currentSeccion = secSelect.value || 'all';
-            // populateUsoOptions(); // Removed
             renderLots(currentFilter);
           });
         }
@@ -2196,16 +2170,12 @@
       function highlightFeature(event, layer) {
         var target = layer || event.target;
 
-        // OPCIÓN 3: Efecto Glow mediante clase CSS en lugar de setStyle duro para stroke
-        // Usamos L.DomUtil para añadir clase al elemento SVG
         if (target._path) {
           target._path.classList.add('glow-effect');
         }
 
         target.setStyle({
           fillOpacity: 0.5,
-          // No cambiamos weight/color aquí para dejar que CSS glow maneje el borde brillante
-          // o lo hacemos sutilmente si el CSS falla
         });
 
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -2248,13 +2218,13 @@
         });
 
         // Formatear precio si existe
-        var precioFormatted = precioSalida ? precioSalida : ''; // Asumimos que viene formateado o es texto, si es número se podría formatear
+        var precioFormatted = precioSalida ? precioSalida : '';
 
         // Construcción del HTML personalizado (Tarjeta Moderna)
         var popupHtml = '<div class="custom-popup-wrapper">' + '<header class="custom-popup-header">' + '<img src="https://www.gob.mx/cms/uploads/identity/image/46013/logo_FIRMA_GOBMX2.png" alt="Gobierno de México">' + '</header>' + '<div class="custom-popup-caption">Ficha Técnica</div>' + '<div class="popup-hero">' + '<div class="popup-hero-title">Lote ' + escapeHtml(loteId) + '</div>' + '<div class="popup-hero-subtitle">' + '<div>Superficie: ' + escapeHtml(supFormatted) + ' m²</div>' + (precioFormatted ? '<div>Precio de avalúo: ' + escapeHtml(precioFormatted) + '</div>' : '') + '</div>' + '</div>' + '<div class="popup-grid">' + '<div class="popup-item">' + '<span class="popup-label">Destino</span>' + '<span class="popup-value">' + escapeHtml(desar) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Sección</span>' + '<span class="popup-value">' + escapeHtml(secci) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Manzana</span>' + '<span class="popup-value">' + escapeHtml(manza) + '</span>' + '</div>' + '<div class="popup-item">' + '<span class="popup-label">Estatus</span>' + '<span class="popup-value">' + escapeHtml(dispo) + '</span>' + '</div>' + '<div class="popup-item popup-full-width">' + '<span class="popup-label">Uso de Suelo</span>' + '<span class="popup-value">' + escapeHtml(uso) + '</span>' + '</div>' + (linkCatalogo ? '<div class="popup-item popup-full-width" style="flex-direction: column; align-items: stretch;">' + '<span class="popup-label">Más información</span>' + '<span class="popup-value" style="width: 100%; text-align: center; margin-top: 4px;"><a href="' + escapeHtml(linkCatalogo) + '" target="_blank" style="color: #ffffff; text-decoration: underline; text-transform: uppercase; font-weight: 700;">Ir al Catálogo</a></span>' + '</div>' : '') + '</div>' + '<div class="custom-popup-footer">Fondo Nacional de Fomento al Turismo</div>' + '</div>';
 
         layer.bindPopup(popupHtml, {
-          autoPan: false // Desactivar autoPan para evitar conflicto con flyTo
+          autoPan: false
         });
 
         layer.on({
@@ -2269,11 +2239,11 @@
 
           ,
           click: function () {
-            // Prevent overlapping animations
+
             if (window.__popupAnimating) return;
             window.__popupAnimating = true;
 
-            // Calcular el centro del polígono usando Turf
+
             var center;
 
             try {
@@ -2282,11 +2252,11 @@
             }
 
             catch (e) {
-              // Fallback si Turf falla
+
               center = layer.getBounds().getCenter();
             }
 
-            // Determinar padding según el tamaño de pantalla
+
             var isMobile = window.innerWidth <= 640;
 
             var paddingOptions = isMobile ? {
@@ -2299,19 +2269,19 @@
 
               ;
 
-            // Fly to con transición más suave
+
             map.flyTo(center, 17, {
               duration: 1.5,
               easeLinearity: 0.5,
               ...paddingOptions
             });
 
-            // Resetear flag al terminar la animación del mapa
+
             map.once('moveend', function () {
               window.__popupAnimating = false;
             });
 
-            // Abrir popup tras un pequeño retraso
+
             setTimeout(function () {
               layer.openPopup();
             }
@@ -2362,7 +2332,7 @@
               return false;
             }
 
-            // Price Filter Logic
+            // Filtro de precio
             if (currentPriceRange !== 'all') {
               var priceVal = parsePrice(normalized.precioSalida);
               if (isNaN(priceVal)) return false; // If no price, exclude or include? Usually exclude if filtering by price.
@@ -2404,7 +2374,7 @@
             var item = makeLotItem(feature, layer);
             lotItems.push(item);
           }
-        }); // No añadimos al mapa directamente aún, lo gestiona updateLayerVisibility
+        });
 
         // Crear grupo de clusters
         if (markersClusterGroup) {
@@ -2434,7 +2404,7 @@
           }
 
           // Marcador invisible o simple punto que representa el lote en el cluster
-          // Usamos un icono div simple
+
           var marker = L.marker(center, {
             icon: L.divIcon({
               className: 'cluster-marker-dot',
@@ -2443,12 +2413,12 @@
             })
           });
 
-          // Al hacer clic en un marcador individual (cuando ya no agrupa), hacemos zoom al polígono
+
           marker.on('click', function () {
             map.flyTo(center, 18, {
               duration: 1.5
             });
-            // El polígono se mostrará al hacer zoom
+
           });
 
           markersClusterGroup.addLayer(marker);
@@ -2606,8 +2576,7 @@
         if (listCountEl) listCountEl.textContent = totalLots > 0 ? totalLots.toLocaleString('es-MX') + ' lotes en el filtro actual'
           : 'Sin lotes para el filtro actual';
 
-        // Actualizar conteos de Estado del Portafolio
-        // Por ahora: Disponible = Total, En Proceso = 0 (según solicitud)
+
         if (countAvailableEl) countAvailableEl.textContent = totalLots.toLocaleString('es-MX');
         if (countProcessEl) countProcessEl.textContent = '0';
       }
@@ -2651,7 +2620,7 @@
             var layer = item.layer;
 
             if (layer) {
-              // OPCIÓN 3: FlyTo suave desde la lista también
+
               var center;
 
               try {
@@ -2778,15 +2747,15 @@
         var devSelect = document.getElementById('dev-select');
         var secSelect = document.getElementById('sec-select');
         var priceSelect = document.getElementById('price-select');
-        var surfaceSelect = document.getElementById('surface-select'); // Nuevo
+        var surfaceSelect = document.getElementById('surface-select');
         var searchInput = document.getElementById('search-input');
 
         if (devSelect) devSelect.value = 'all';
         populateSectionOptions('all');
         if (secSelect) secSelect.value = 'all';
-        // populateUsoOptions(); // Removed
+
         if (priceSelect) priceSelect.value = 'all';
-        if (surfaceSelect) surfaceSelect.value = 'all'; // Resetear superficie
+        if (surfaceSelect) surfaceSelect.value = 'all';
         if (searchInput) searchInput.value = '';
 
         // Vista general México
