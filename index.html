@@ -1426,7 +1426,7 @@
       }
     }
 
-    /* MODO EMBEBIDO (Para insertar en iframe) */
+
     body.embed-mode .top-nav,
     body.embed-mode footer {
       display: none !important;
@@ -2633,7 +2633,11 @@
 
           var dispoLabel = dispo || 'Sin estatus';
 
-          card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + sup + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(sup) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
+          // Formatear superficie para la lista
+          var supVal = parseSurface(sup);
+          var supDisplay = isNaN(supVal) ? sup : supVal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+          card.innerHTML = '<div class="lot-card-header">' + '<span class="lot-badge">' + escapeHtml(dispoLabel) + '</span>' + '</div>' + '<div>' + '<h4 class="lot-name">' + escapeHtml('Lote ' + loteId + ' | Mz ' + manza + ' | ' + secci + ' | ' + desar + ' | ' + supDisplay + ' m²') + '</h4>' + '<p class="lot-location">' + escapeHtml(secci || '') + (desar ? ' · ' + escapeHtml(desar) : '') + '</p>' + '</div>' + '<div class="lot-card-meta">' + (sup ? '<span>' + escapeHtml(supDisplay) + ' m²</span>' : '') + (precio ? '<span>' + escapeHtml(precio) + '</span>' : '') + (uso ? '<span>' + escapeHtml(uso) + '</span>' : '') + '</div>';
 
           card.addEventListener('click', function () {
             var layer = item.layer;
