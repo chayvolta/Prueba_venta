@@ -1976,9 +1976,9 @@
       }
 
       function loadGeoJSON() {
-        fetch('Prueba_2.geojson').then(function (response) {
+        fetch('Prueba_3.geojson').then(function (response) {
           if (!response.ok) {
-            throw new Error('No se pudo cargar Prueba_2.geojson');
+            throw new Error('No se pudo cargar Prueba_3.geojson');
           }
 
           return response.json();
@@ -1995,7 +1995,7 @@
           var alertBox = document.getElementById('geojson-error');
 
           if (alertBox) {
-            alertBox.textContent = 'No se pudo cargar el archivo de lotes. Verifica que "Prueba_2.geojson" esté en la misma carpeta que este archivo HTML o ajusta la ruta en el código.';
+            alertBox.textContent = 'No se pudo cargar el archivo de lotes. Verifica que "Prueba_3.geojson" esté en la misma carpeta que este archivo HTML o ajusta la ruta en el código.';
             alertBox.style.display = 'block';
           }
         });
