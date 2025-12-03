@@ -1810,7 +1810,7 @@
       }
 
       function getUsoFromProps(p) {
-        return ((p['Descripci___'] || p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '').toString().trim() || ''
+        return ((p['Descripci_'] || p['04-04Descr'] || p['Uso_suelo'] || p['uso_suelo'] || '').toString().trim() || ''
         );
       }
 
@@ -1825,9 +1825,9 @@
           estatus: p['Estatus'] || p['04-04Dispo'] || 'Disponible',
           superficie: p['Superficie'] || p['04-04Super'] || '',
           precio: p['Precio'] || p['04-04Preci'] || '',
-          precioSalida: p['Precio_Salida'] || p['Precio'] || p['04-04Preci'] || '',
+          precioSalida: p['Precio_Sal'] || p['Precio'] || p['04-04Preci'] || '',
           uso: getUsoFromProps(p),
-          linkCatalogo: p['Link_Catalogo'] || '',
+          linkCatalogo: p['Link_Catal'] || '',
           nombre: p.Nombre || ''
         };
       }
