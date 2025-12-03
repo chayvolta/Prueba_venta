@@ -1584,10 +1584,10 @@
                   <label class="selector-label" for="price-select">Rango de Precios</label>
                   <select id="price-select" class="selector-select">
                     <option value="all">Cualquier precio</option>
-                    <option value="range1">$300k - $2.5M</option>
-                    <option value="range2">$2.5M - $5M</option>
-                    <option value="range3">$5M - $10M</option>
-                    <option value="range4">Más de $10M</option>
+                    <option value="range1">Menos de $500,000</option>
+                    <option value="range2">$500,000 - $1,500,000</option>
+                    <option value="range3">$1,500,000 - $5,000,000</option>
+                    <option value="range4">Más de $5,000,000</option>
                   </select>
                 </div>
                 <div class="selector-group" style="min-width: auto;">
@@ -2357,17 +2357,17 @@
               if (isNaN(priceVal)) return false; // If no price, exclude or include? Usually exclude if filtering by price.
 
               if (currentPriceRange === 'range1') {
-                // 300k - 2.5M
-                if (priceVal < 300000 || priceVal > 2500000) return false;
+                // < 500k
+                if (priceVal >= 500000) return false;
               } else if (currentPriceRange === 'range2') {
-                // 2.5M - 5M
-                if (priceVal <= 2500000 || priceVal > 5000000) return false;
+                // 500k - 1.5M
+                if (priceVal < 500000 || priceVal >= 1500000) return false;
               } else if (currentPriceRange === 'range3') {
-                // 5M - 10M
-                if (priceVal <= 5000000 || priceVal > 10000000) return false;
+                // 1.5M - 5M
+                if (priceVal < 1500000 || priceVal >= 5000000) return false;
               } else if (currentPriceRange === 'range4') {
-                // > 10M
-                if (priceVal <= 10000000) return false;
+                // > 5M
+                if (priceVal < 5000000) return false;
               }
             }
 
